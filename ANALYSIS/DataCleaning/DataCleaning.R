@@ -10,7 +10,7 @@ library(summarytools)
 library(lme4)  
 library(lmerTest) 
  
-data<- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/DATA/Dataset_Neophobia2.0.csv')
+data<- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/ANALYSIS/DataCleaning/Dataset_Neophobia2.0.csv')
 
 #########Data cleaning###########
 data$Approach.start <- as_hms(data$Approach.start)
@@ -49,7 +49,11 @@ final_dataset <- final_dataset %>%
   mutate(Approaches = replace(Approaches, is.na(Approaches), 0)) #Replace missing values with 0 (it's still informative)
 #1 = solved by SC cockatoos, 0 = unsolved or not solved by SC cockatoos
 final_dataset$Solved <- ifelse(is.na(final_dataset$Latency_Solving), 0, 1)
+approach_sum <- aggregate(ApproachDuration ~ Roost + Level, data = data, FUN = sum)
+final_dataset <- merge(final_dataset, approach_sum, by = c("Roost", "Level"), all.x = TRUE)
 
 ##Tidy the dataset
+final_dataset<- final_dataset %>% select(-Approach.date, -ApproachDuration.x, -Approach.n, -Approach.start, -Approach.end, -Approach.type) 
 names(final_dataset)[names(final_dataset) == "data$ApproachDuration"] <- "Mean approach duration" #Rename the new column
-final_dataset<- final_dataset %>% select(-Approach.date, -Approach.n, -Approach.start, -Approach.end, -ApproachDuration, -Approach.type) 
+names(final_dataset)[names(final_dataset) == "ApproachDuration.y"] <- "Approaches Duration"
+
