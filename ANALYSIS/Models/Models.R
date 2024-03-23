@@ -45,23 +45,39 @@ print(cortest4)
 ###General Shannon index
 ggplot(final_dataset, aes(x = General.Shannon.index)) +
   geom_density() +
-  labs(title = "Kernel Density Plot", x = "General Shannon index", y = "Custom Y-axis Label")
+  labs(title = "Kernel Density Plot", x = "General Shannon index", y = "Density")
 ###Roost size
-plot(density(final_dataset$Roost.size), main = "Kernel Density Plot")
+ggplot(final_dataset, aes(x = Roost.size)) +
+  geom_density() +
+  labs(title = "Kernel Density Plot", x = "Roost size", y = "Density")
 ###Latencies
 ggplot(final_dataset, aes(x = Latency_1stapproach)) +
   geom_density() +
-  labs(title = "Kernel Density Plot", x = "Latency 1st approach", y = "Custom Y-axis Label")
+  labs(title = "Kernel Density Plot", x = "Latency 1st approach", y = "Density")
 ggplot(final_dataset, aes(x = Latency_Solving)) +
   geom_density() +
-  labs(title = "Kernel Density Plot", x = "Latency solving", y = "Custom Y-axis Label")
+  labs(title = "Kernel Density Plot", x = "Latency solving", y = "Density")
 ###Mean approach duration
 ggplot(final_dataset, aes(x = Mean.approach.duration)) +
   geom_density() +
-  labs(title = "Kernel Density Plot", x = "Mean approach duration", y = "Custom Y-axis Label")
-###Tot time data
-ggplot(final_dataset, aes(x = Tot_time_data)) +
+  labs(title = "Kernel Density Plot", x = "Mean approach duration", y = "Density")
+###Ratio 
+ggplot(final_dataset, aes(x = Ratio)) +
   geom_density() +
-  labs(title = "Kernel Density Plot", x = "Total time data", y = "Custom Y-axis Label")
+  labs(title = "Kernel Density Plot", x = "Ratio", y = "Density")
 
 #####Bayesian GLMM#####
+
+###First approach/ Neophobia
+model_1stapproach <- brm(log(Latency_1stapproach) ~ Roost.size + General.Shannon.index + Level + Position +
+                           (1 | Roost), 
+                         data = final_dataset, 
+                         family = gaussian(), 
+                         prior = NULL, 
+                         cores = 6, 
+                         iter = 15000,
+                         control = list(adapt_delta = 0.999))
+summary(model_1stapproach)
+
+###Ratio time spent in approaches per tot time up
+
