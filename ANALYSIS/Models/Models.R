@@ -68,8 +68,14 @@ ggplot(final_dataset, aes(x = Ratio)) +
 
 #####Bayesian GLMM#####
 
+##Change reference for the model if needed
+#final_dataset$Position <- final_dataset$Position %>%
+#relevel(ref="R")
+#final_dataset$Level <- final_dataset$Level %>%
+#relevel(ref="1")
+
 ###First approach/ Neophobia
-model_1stapproach <- brm(log(Latency_1stapproach) ~ Roost.size + General.Shannon.index + Level + Position +
+model_1stapproach <- brm(log(Latency_1stapproach) ~ Roost.size + General.Shannon.index + Level + Position + 
                            (1 | Roost), 
                          data = final_dataset, 
                          family = gaussian(), 
@@ -80,4 +86,19 @@ model_1stapproach <- brm(log(Latency_1stapproach) ~ Roost.size + General.Shannon
 summary(model_1stapproach)
 
 ###Ratio time spent in approaches per tot time up
+#Need to find the right model/right distribution for the model
+
+##Solved or not
+model_solving <- brm(Solved ~ Roost.size + General.Shannon.index + Position + Level +
+                       (1 | Roost),
+                     data = final_dataset,
+                     family = bernoulli(link = "logit"),
+                     cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
+summary(model_solving)
+model_solving2 <- brm(Solved ~ Latency_1stapproach +
+                       (1 | Roost),
+                     data = final_dataset,
+                     family = bernoulli(link = "logit"),
+                     cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
+summary(model_solving)
 
