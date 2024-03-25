@@ -41,6 +41,16 @@ cortest4<-cor.test(final_dataset$Shannon.index.natural.terrestrial.vegetation, f
 print(cortest4)
 #All environmental variables highly correlated between each other, so I will use in the end only the General Shannon Index
 
+cortest5<- cor.test(final_dataset$Roost.size, final_dataset$General.Shannon.index)
+print(cortest5) #Significant positive correlation
+cortest6<- cor.test(final_dataset$Roost.size, final_dataset$Shannon.index.Artificial.Surface)
+print(cortest6)
+cortest7<- cor.test(final_dataset$Latency_1stapproach, final_dataset$General.Shannon.index, method = "pearson", use = "complete.obs")
+print(cortest7) #Significant negative correlation
+cortest8<- cor.test(final_dataset$Latency_1stapproach, final_dataset$Roost.size, method = "pearson", use = "complete.obs")
+print(cortest8)
+#Roost size is significantly positively correlated with the Shannon index, while the latency until first appraoch is significantly negatively correlated with Shannon index
+
 #####Variables distribution#####
 ###General Shannon index
 ggplot(final_dataset, aes(x = General.Shannon.index)) +
@@ -54,6 +64,11 @@ ggplot(final_dataset, aes(x = Roost.size)) +
 ggplot(final_dataset, aes(x = Latency_1stapproach)) +
   geom_density() +
   labs(title = "Kernel Density Plot", x = "Latency 1st approach", y = "Density")
+ggplot(final_dataset, aes(x = log(Latency_1stapproach))) +
+  geom_density() +
+  labs(title = "Kernel Density Plot", x = "log Latency 1st approach", y = "Density")
+shapiro.test(log(final_dataset$Latency_1stapproach)) #Latency first approach has a normal distribution according to shapiro test
+
 ggplot(final_dataset, aes(x = Latency_Solving)) +
   geom_density() +
   labs(title = "Kernel Density Plot", x = "Latency solving", y = "Density")
@@ -75,7 +90,7 @@ ggplot(final_dataset, aes(x = Ratio)) +
 #relevel(ref="1")
 
 ###First approach/ Neophobia
-model_1stapproach <- brm(log(Latency_1stapproach) ~ Roost.size + General.Shannon.index + Level + Position + 
+model_1stapproach<- brm(log(Latency_1stapproach) ~ General.Shannon.index + Level + Position + 
                            (1 | Roost), 
                          data = final_dataset, 
                          family = gaussian(), 
@@ -89,16 +104,18 @@ summary(model_1stapproach)
 #Need to find the right model/right distribution for the model
 
 ##Solved or not
-model_solving <- brm(Solved ~ Roost.size + General.Shannon.index + Position + Level +
+model_solving <- brm(Solved ~ General.Shannon.index + Position + Level +
                        (1 | Roost),
                      data = final_dataset,
                      family = bernoulli(link = "logit"),
                      cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
 summary(model_solving)
-model_solving2 <- brm(Solved ~ Latency_1stapproach +
+
+model_solving2 <- brm(Solved ~  Latency_1stapproach + #MODEL DOESN'T CONVERGE
                        (1 | Roost),
                      data = final_dataset,
                      family = bernoulli(link = "logit"),
                      cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
-summary(model_solving)
+summary(model_solving2)
+
 
