@@ -43,11 +43,12 @@ summary(model_1stapproacha) #Intercept significant, not level or position
 summary(model_1stapproachb) #Intercept significant, Shannon index significant pvalue<0.0149
 
 ###Solving
+Roost100<- final_dataset$Roost.size/100
 model_solvinga <- glmer(Solved ~ Position + Level +
                          (1 | Roost),
                        data = final_dataset,
                        family = binomial(link = "logit"))
-model_solvingb <- glmer(Solved ~ General.Shannon.index +
+model_solvingb <- glmer(Solved ~ General.Shannon.index + Roost100 +
                           (1 | Roost),
                         data = final_dataset,
                         family = binomial(link = "logit"))
