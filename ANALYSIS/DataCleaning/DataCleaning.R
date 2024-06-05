@@ -57,3 +57,4 @@ final_dataset<- final_dataset %>% select(-Approach.date, -ApproachDuration.x, -A
 names(final_dataset)[names(final_dataset) == "data$ApproachDuration"] <- "Mean approach duration" #Rename the new column
 names(final_dataset)[names(final_dataset) == "ApproachDuration.y"] <- "Approaches Duration"
 
+write.csv(final_dataset, file = "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/RESULTS/DataCleaning/Dataset_cleaned.csv")

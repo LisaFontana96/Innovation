@@ -49,7 +49,7 @@ cortest7<- cor.test(final_dataset$Latency_1stapproach, final_dataset$General.Sha
 print(cortest7) #Significant negative correlation
 cortest8<- cor.test(final_dataset$Latency_1stapproach, final_dataset$Roost.size, method = "pearson", use = "complete.obs")
 print(cortest8)
-#Roost size is significantly positively correlated with the Shannon index, while the latency until first appraoch is significantly negatively correlated with Shannon index
+#Roost size is significantly positively correlated with the Shannon index, while the latency until first approach is significantly negatively correlated with Shannon index
 
 #####Variables distribution#####
 ###General Shannon index
@@ -90,32 +90,54 @@ ggplot(final_dataset, aes(x = Ratio)) +
 #relevel(ref="1")
 
 ###First approach/ Neophobia
-model_1stapproach<- brm(log(Latency_1stapproach) ~ General.Shannon.index + Level + Position + 
+# model_1stapproach<- brm(log(Latency_1stapproach) ~ scale(General.Shannon.index) + scale(Roost.size) + Level + Position +
+#                           (1 | Roost), 
+#                         data = final_dataset, 
+#                         family = gaussian(), 
+#                         cores = 6, 
+#                         iter = 15000,
+#                         control = list(adapt_delta = 0.999))
+#POSITION has no effect, therefore I removed it (not the main variable of interest)
+
+  rerun = FALSE
+if(rerun){
+model_1stapproach<- brm(log(Latency_1stapproach) ~ scale(General.Shannon.index) + scale(Roost.size) + Level + 
                            (1 | Roost), 
                          data = final_dataset, 
                          family = gaussian(), 
-                         prior = NULL, 
                          cores = 6, 
                          iter = 15000,
                          control = list(adapt_delta = 0.999))
+saveRDS(model_1stapproach, "./model_1stapproach")} else {
+      model_1stapproach<- readRSD("./model_1stapproach")    
+}
 summary(model_1stapproach)
 
-###Ratio time spent in approaches per tot time up
-#Need to find the right model/right distribution for the model
-
 ##Solved or not
+# model_solving <- brm(Solved ~ General.Shannon.index + Position + Level +
+#                        (1 | Roost),
+#                      data = final_dataset,
+#                      family = bernoulli(link = "logit"),
+#                      cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
+#POSITION has no effect, therefore I removed it (not the main variable of interest)
+
+rerun = FALSE
+if(rerun){
 model_solving <- brm(Solved ~ General.Shannon.index + Position + Level +
                        (1 | Roost),
                      data = final_dataset,
                      family = bernoulli(link = "logit"),
                      cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
+saveRDS(model_solving, "./model_solving")} else {
+  model_solving<- readRSD("./model_solving")    
+}
 summary(model_solving)
 
-model_solving2 <- brm(Solved ~  Latency_1stapproach + #MODEL DOESN'T CONVERGE
-                       (1 | Roost),
-                     data = final_dataset,
-                     family = bernoulli(link = "logit"),
-                     cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
-summary(model_solving2)
-
+# model_solving2 <- brm(Solved ~  Latency_1stapproach + 
+#                        (1 | Roost),
+#                      data = final_dataset,
+#                      family = bernoulli(link = "logit"),
+#                      cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
+# summary(model_solving2)
+#MODEL DOESN'T CONVERGE
 
