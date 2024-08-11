@@ -43,7 +43,6 @@ ggplot(slocsb, aes(x = site, y = Urbanization_Index)) +
   theme_minimal()
 
 
-
 #################################################################################
 #################################################################################
 # for analysis with the home range of multiple roost instead of a radius around the roost, follow the following 

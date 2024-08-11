@@ -5,6 +5,8 @@
 # in particular, can provide insights into the degree of fragmentation or 
 # aggregation in the urban landscape.
 # 
+rm(list = ls())
+cat("\014")
 # Load required libraries
 library(SpatEntropy)
 library(spatstat)
@@ -19,32 +21,48 @@ library(ggplot2)
 Proj <- st_crs(4326)
 
 # Load data
-landcover <- raster('/Users/u7584446/Library/CloudStorage/OneDrive-AustralianNationalUniversity/Desktop/buildings/Merged_land_roads_build_Jul24.tif')
+landcover <- raster('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/Layers/Merged_land_roads_build_Jul24.tif')
+# landcover<- raster('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/QGIS/ga_ls_landcover_class_cyear_2_1-0-0_au_x15y-40_2020-01-01_level3_rgb.tif')
 
 ###############################################################################
 ###############################################################################
-# Oneill entropy with area rather then Home range
+# Oneill entropy with area for each roost
 
-S2 <- read.csv('/Users/u7584446/Library/CloudStorage/OneDrive-AustralianNationalUniversity/Desktop/BG.csv')
+ANU <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/ANU.csv')
+CK <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Cook.csv')
+CP <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Corroboree.csv')
+GPM <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/GarisPlace.csv')
+GU <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Gungahlin.csv')
+HA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Hackett.csv')
+HIG <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Higgins.csv')
+LG <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/LakeGinninderra.csv')
+LY <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Lyneam.csv')
+OC <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/OConnor.csv')
+TP <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Telopea.csv')
+WA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Watson.csv')
+WM <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/WarMemorial.csv')
+YA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Yarralulma.csv')
+NAR <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Narrabundah.csv')
 
+### ANU ###
 # Check if S2 is empty
-if (nrow(S2) == 0) {
+if (nrow(ANU) == 0) {
   warning("S2.csv is empty or not read correctly")
 } else {
   # Extract coordinates from CSV
-  S2_lon <- S2$Lon
-  S2_lat <- S2$Lat
+  ANU_lon <- ANU$Lon
+  ANU_lat <- ANU$Lat
   
   # Define cropping extent
   buffer_radius <- 2000  # 2km in meters
   buffer_degrees <- buffer_radius / 111000
   
   # Define the center of the circular mask
-  center_lon <- mean(S2_lon)
-  center_lat <- mean(S2_lat)
+  center_lon <- mean(ANU_lon)
+  center_lat <- mean(ANU_lat)
   
   # Define cropping extent based on circular buffer
-  S2_extent <- extent(
+  ANU_extent <- extent(
     center_lon - buffer_degrees,
     center_lon + buffer_degrees,
     center_lat - buffer_degrees,
@@ -61,723 +79,814 @@ if (nrow(S2) == 0) {
     )), "circle")
   ))
   
-  S2_landcover <- crop(landcover, S2_extent)
+  ANU_landcover <- crop(landcover, ANU_extent)
   
   # Mask the cropped raster with the circular mask
-  S2_landcover <- mask(S2_landcover, circle)
+  ANU_landcover <- mask(ANU_landcover, circle)
 
-  plot(S2_landcover)
+  plot(ANU_landcover)
 }
 
 
 # Convert raster to matrix
-S2_landcover_matrix <- as.matrix(S2_landcover)
+ANU_landcover_matrix <- as.matrix(ANU_landcover)
 
 # O'Neill's Entropy and Contagion Indices to get a more 
 # comprehensive view of landscape heterogeneity, including both the diversity of 
 # land cover types and their spatial arrangement.
-oneill (S2_landcover_matrix)
+oneill (ANU_landcover_matrix)
+#Oneill ANU 2.38556, relative 0.573606
 
+### Cook ###
+# Check if S2 is empty
+if (nrow(CK) == 0) {
+  warning("S2.csv is empty or not read correctly")
+} else {
+  # Extract coordinates from CSV
+  CK_lon <- CK$Lon
+  CK_lat <- CK$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(CK_lon)
+  center_lat <- mean(CK_lat)
+  
+  # Define cropping extent based on circular buffer
+  CK_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  CK_landcover <- crop(landcover, CK_extent)
+  
+  # Mask the cropped raster with the circular mask
+  CK_landcover <- mask(CK_landcover, circle)
+  
+  plot(CK_landcover)
+}
+
+
+# Convert raster to matrix
+CK_landcover_matrix <- as.matrix(CK_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (CK_landcover_matrix)
+#Oneill Cook 1.872539, relative 0.4811473
+
+### Corroboree ###
+# Check if S2 is empty
+if (nrow(CP) == 0) {
+  warning("S2.csv is empty or not read correctly")
+} else {
+  # Extract coordinates from CSV
+  CP_lon <- CP$Lon
+  CP_lat <- CP$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(CP_lon)
+  center_lat <- mean(CP_lat)
+  
+  # Define cropping extent based on circular buffer
+  CP_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  CP_landcover <- crop(landcover, CP_extent)
+  
+  # Mask the cropped raster with the circular mask
+  CP_landcover <- mask(CP_landcover, circle)
+  
+  plot(CP_landcover)
+}
+
+
+# Convert raster to matrix
+CP_landcover_matrix <- as.matrix(CP_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (CP_landcover_matrix)
+#Oneill CP 2.612594, relative 0.6713038
+
+### Garis Place McGregor ###
+# Check if S2 is empty
+if (nrow(GPM) == 0) {
+  warning("S2.csv is empty or not read correctly")
+} else {
+  # Extract coordinates from CSV
+  GPM_lon <- GPM$Lon
+  GPM_lat <- GPM$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(GPM_lon)
+  center_lat <- mean(GPM_lat)
+  
+  # Define cropping extent based on circular buffer
+  GPM_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  GPM_landcover <- crop(landcover, GPM_extent)
+  
+  # Mask the cropped raster with the circular mask
+  GPM_landcover <- mask(GPM_landcover, circle)
+  
+  plot(GPM_landcover)
+}
+
+
+# Convert raster to matrix
+GPM_landcover_matrix <- as.matrix(GPM_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (GPM_landcover_matrix)
+#Oneill GPM 2.296369, relative 0.5521599
+
+### Gungahlin ###
+# Check if S2 is empty
+if (nrow(GU) == 0) {
+  warning("S2.csv is empty or not read correctly")
+} else {
+  # Extract coordinates from CSV
+  GU_lon <- GU$Lon
+  GU_lat <- GU$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(GU_lon)
+  center_lat <- mean(GU_lat)
+  
+  # Define cropping extent based on circular buffer
+  GU_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  GU_landcover <- crop(landcover, GU_extent)
+  
+  # Mask the cropped raster with the circular mask
+  GU_landcover <- mask(GU_landcover, circle)
+  
+  plot(GU_landcover)
+}
+
+
+# Convert raster to matrix
+GU_landcover_matrix <- as.matrix(GU_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (GU_landcover_matrix)
+#Oneill GU 2.431183, relative 0.6246905
+
+### Hackett ###
+# Check if S2 is empty
+if (nrow(HA) == 0) {
+  warning("S2.csv is empty or not read correctly")
+} else {
+  # Extract coordinates from CSV
+  HA_lon <- HA$Lon
+  HA_lat <- HA$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(HA_lon)
+  center_lat <- mean(HA_lat)
+  
+  # Define cropping extent based on circular buffer
+  HA_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  HA_landcover <- crop(landcover, HA_extent)
+  
+  # Mask the cropped raster with the circular mask
+  HA_landcover <- mask(HA_landcover, circle)
+  
+  plot(HA_landcover)
+}
+
+
+# Convert raster to matrix
+HA_landcover_matrix <- as.matrix(HA_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (HA_landcover_matrix)
+#Oneill HA 2.022477, relative 0.5196738
+
+### Higgins ### 
+# Check if S2 is empty
+if (nrow(HIG) == 0) {
+  warning("S2.csv is empty or not read correctly")
+} else {
+  # Extract coordinates from CSV
+  HIG_lon <- HIG$Lon
+  HIG_lat <- HIG$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(HIG_lon)
+  center_lat <- mean(HIG_lat)
+  
+  # Define cropping extent based on circular buffer
+  HIG_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  HIG_landcover <- crop(landcover, HIG_extent)
+  
+  # Mask the cropped raster with the circular mask
+  HIG_landcover <- mask(HIG_landcover, circle)
+  
+  plot(HIG_landcover)
+}
+
+
+# Convert raster to matrix
+HIG_landcover_matrix <- as.matrix(HIG_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (HIG_landcover_matrix)
+#Oneill HIG 2.56934, relative 0.6177957
+
+### Lake Ginninderra ### 
+# Check if S2 is empty
+if (nrow(LG) == 0) {
+  warning("S2.csv is empty or not read correctly")
+} else {
+  # Extract coordinates from CSV
+  LG_lon <- LG$Lon
+  LG_lat <- LG$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(LG_lon)
+  center_lat <- mean(LG_lat)
+  
+  # Define cropping extent based on circular buffer
+  LG_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  LG_landcover <- crop(landcover, LG_extent)
+  
+  # Mask the cropped raster with the circular mask
+  LG_landcover <- mask(LG_landcover, circle)
+  
+  plot(LG_landcover)
+}
+
+
+# Convert raster to matrix
+LG_landcover_matrix <- as.matrix(LG_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (LG_landcover_matrix)
+#Oneill LG 2.711737, relative 0.6520349
+
+### Lyneam ### 
+# Check if S2 is empty
+if (nrow(LY) == 0) {
+  warning("S2.csv is empty or not read correctly")
+} else {
+  # Extract coordinates from CSV
+  LY_lon <- LY$Lon
+  LY_lat <- LY$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(LY_lon)
+  center_lat <- mean(LY_lat)
+  
+  # Define cropping extent based on circular buffer
+  LY_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  LY_landcover <- crop(landcover, LY_extent)
+  
+  # Mask the cropped raster with the circular mask
+  LY_landcover <- mask(LY_landcover, circle)
+  
+  plot(LY_landcover)
+}
+
+
+# Convert raster to matrix
+LY_landcover_matrix <- as.matrix(LY_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (LY_landcover_matrix)
+#Oneill LY 2.804285, relative 0.674288
+
+### O'Connor ### 
+# Check if S2 is empty
+if (nrow(OC) == 0) {
+  warning("S2.csv is empty or not read correctOC")
+} else {
+  # Extract coordinates from CSV
+  OC_lon <- OC$Lon
+  OC_lat <- OC$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(OC_lon)
+  center_lat <- mean(OC_lat)
+  
+  # Define cropping extent based on circular buffer
+  OC_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  OC_landcover <- crop(landcover, OC_extent)
+  
+  # Mask the cropped raster with the circular mask
+  OC_landcover <- mask(OC_landcover, circle)
+  
+  plot(OC_landcover)
+}
+
+
+# Convert raster to matrix
+OC_landcover_matrix <- as.matrix(OC_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (OC_landcover_matrix)
+#Oneill OC 2.310014, relative 0.5554409
+
+### Telopea park ### 
+# Check if S2 is empty
+if (nrow(TP) == 0) {
+  warning("S2.csv is empty or not read correctOC")
+} else {
+  # Extract coordinates from CSV
+  TP_lon <- TP$Lon
+  TP_lat <- TP$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(TP_lon)
+  center_lat <- mean(TP_lat)
+  
+  # Define cropping extent based on circular buffer
+  TP_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  TP_landcover <- crop(landcover, TP_extent)
+  
+  # Mask the cropped raster with the circular mask
+  TP_landcover <- mask(TP_landcover, circle)
+  
+  plot(TP_landcover)
+}
+
+
+# Convert raster to matrix
+TP_landcover_matrix <- as.matrix(TP_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (TP_landcover_matrix)
+#Oneill TP 2.84118, relative 0.6831593
+
+### Watson ### 
+# Check if S2 is empty
+if (nrow(WA) == 0) {
+  warning("S2.csv is empty or not read correctOC")
+} else {
+  # Extract coordinates from CSV
+  WA_lon <- WA$Lon
+  WA_lat <- WA$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(WA_lon)
+  center_lat <- mean(WA_lat)
+  
+  # Define cropping extent based on circular buffer
+  WA_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  WA_landcover <- crop(landcover, WA_extent)
+  
+  # Mask the cropped raster with the circular mask
+  WA_landcover <- mask(WA_landcover, circle)
+  
+  plot(WA_landcover)
+}
+
+
+# Convert raster to matrix
+WA_landcover_matrix <- as.matrix(WA_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (WA_landcover_matrix)
+#Oneill WA 2.364287, relative 0.5684909
+
+### War memorial ### 
+# Check if S2 is empty
+if (nrow(WM) == 0) {
+  warning("S2.csv is empty or not read correctOC")
+} else {
+  # Extract coordinates from CSV
+  WM_lon <- WM$Lon
+  WM_lat <- WM$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(WM_lon)
+  center_lat <- mean(WM_lat)
+  
+  # Define cropping extent based on circular buffer
+  WM_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  WM_landcover <- crop(landcover, WM_extent)
+  
+  # Mask the cropped raster with the circular mask
+  WM_landcover <- mask(WM_landcover, circle)
+  
+  plot(WM_landcover)
+}
+
+
+# Convert raster to matrix
+WM_landcover_matrix <- as.matrix(WM_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (WM_landcover_matrix)
+#Oneill WM 2.569044, relative 0.6177246
+
+### Yarralulma ### 
+# Check if S2 is empty
+if (nrow(YA) == 0) {
+  warning("S2.csv is empty or not read correctOC")
+} else {
+  # Extract coordinates from CSV
+  YA_lon <- YA$Lon
+  YA_lat <- YA$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(YA_lon)
+  center_lat <- mean(YA_lat)
+  
+  # Define cropping extent based on circular buffer
+  YA_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  YA_landcover <- crop(landcover, YA_extent)
+  
+  # Mask the cropped raster with the circular mask
+  YA_landcover <- mask(YA_landcover, circle)
+  
+  plot(YA_landcover)
+}
+
+
+# Convert raster to matrix
+YA_landcover_matrix <- as.matrix(YA_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (YA_landcover_matrix)
+#Oneill YA 2.501617, relative 0.6427883
+
+### Narrabundah ### 
+# Check if S2 is empty
+if (nrow(NAR) == 0) {
+  warning("S2.csv is empty or not read correctOC")
+} else {
+  # Extract coordinates from CSV
+  NAR_lon <- NAR$Lon
+  NAR_lat <- NAR$Lat
+  
+  # Define cropping extent
+  buffer_radius <- 2000  # 2km in meters
+  buffer_degrees <- buffer_radius / 111000
+  
+  # Define the center of the circular mask
+  center_lon <- mean(NAR_lon)
+  center_lat <- mean(NAR_lat)
+  
+  # Define cropping extent based on circular buffer
+  NAR_extent <- extent(
+    center_lon - buffer_degrees,
+    center_lon + buffer_degrees,
+    center_lat - buffer_degrees,
+    center_lat + buffer_degrees
+  )
+  
+  # Create a circular mask
+  circle <- SpatialPolygons(list(
+    Polygons(list(Polygon(
+      cbind(
+        center_lon + buffer_degrees * cos(seq(0, 2 * pi, length.out = 100)),
+        center_lat + buffer_degrees * sin(seq(0, 2 * pi, length.out = 100))
+      )
+    )), "circle")
+  ))
+  
+  NAR_landcover <- crop(landcover, NAR_extent)
+  
+  # Mask the cropped raster with the circular mask
+  NAR_landcover <- mask(NAR_landcover, circle)
+  
+  plot(NAR_landcover)
+}
+
+
+# Convert raster to matrix
+NAR_landcover_matrix <- as.matrix(NAR_landcover)
+
+# O'Neill's Entropy and Contagion Indices to get a more 
+# comprehensive view of landscape heterogeneity, including both the diversity of 
+# land cover types and their spatial arrangement.
+oneill (NAR_landcover_matrix)
+#Oneill NAR 2.439549, relative 0.5551433
 
 ###############################################################################
 ###############################################################################
 # Oneill entropy for home range rather than specific area from roost 
 # Load shapefile with home range
-S1 <- st_read('/Users/u7584446/Downloads/Home ranges/WA_resident_sunS2lc_c_union.shp')
+# S1 <- st_read('/Users/u7584446/Downloads/Home ranges/WA_resident_sunS2lc_c_union.shp')
+# 
+# # Transform the shapefile to match the landcover CRS
+# S1 <- st_transform(S1, st_crs(landcover))
+# 
+# # Get the extent of the shapefile
+# S1_extent <- st_bbox(S1) # Use st_bbox for getting bounding box in sf
+# 
+# # Crop the landcover raster to the extent of the shapefile
+# S1_landcover <- crop(landcover, extent(S1_extent))
+# 
+# # Mask the cropped raster with the shapefile
+# S1_landcover <- mask(S1_landcover, as(S1, 'Spatial')) # Convert sf object to Spatial for raster masking
+# 
+# # Plot the masked landcover raster
+# plot(S1_landcover)
+# 
+# # Convert raster to matrix
+# S1_landcover_matrix <- as.matrix(S1_landcover)
+# 
+# # O'Neill's Entropy and Contagion Indices to get a more 
+# # comprehensive view of landscape heterogeneity, including both the diversity of 
+# # land cover types and their spatial arrangement.
+# oneill (S1_landcover_matrix)
+# 
+# 
+# ###############################################################################
+# #### Plot the Entropy results with the range 
+# # Create a dataframe
+# data <- data.frame(
+#   Site = c("AN", "HA", "LY", "OC", "WA_JP", "WM_JP", "L_TH", "WM_sb", "WA_sb", "CO_sb"),
+#   ONeill = c(2.553374, 2.330625, 2.494801, 2.271436, 2.172176, 2.466872, 0.02424638, 2.771941, 2.575191, 2.431056),
+#   MinRange = c(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000),
+#   MaxRange = c(4.158883, 4.158883, 4.394449, 4.158883, 4.394449, 4.394449, 1.386294, 4.158883, 4.158883, 4.158883)
+# )
+# 
+# # Plot the data
+# ggplot(data, aes(x = Site)) +
+#   geom_point(aes(y = ONeill), color = "blue", size = 3) +
+#   geom_errorbar(aes(ymin = MinRange, ymax = MaxRange), width = 0.2, color = "red") +
+#   labs(title = "O'Neill Values and Ranges for Each Site",
+#        x = "Site",
+#        y = "O'Neill Value / Range") +
+#   theme_minimal()
 
-# Transform the shapefile to match the landcover CRS
-S1 <- st_transform(S1, st_crs(landcover))
-
-# Get the extent of the shapefile
-S1_extent <- st_bbox(S1) # Use st_bbox for getting bounding box in sf
-
-# Crop the landcover raster to the extent of the shapefile
-S1_landcover <- crop(landcover, extent(S1_extent))
-
-# Mask the cropped raster with the shapefile
-S1_landcover <- mask(S1_landcover, as(S1, 'Spatial')) # Convert sf object to Spatial for raster masking
-
-# Plot the masked landcover raster
-plot(S1_landcover)
-
-# Convert raster to matrix
-S1_landcover_matrix <- as.matrix(S1_landcover)
-
-# O'Neill's Entropy and Contagion Indices to get a more 
-# comprehensive view of landscape heterogeneity, including both the diversity of 
-# land cover types and their spatial arrangement.
-oneill (S1_landcover_matrix)
 
 
-###############################################################################
-#### Plot the Entropy results with the range 
-# Create a dataframe
-data <- data.frame(
-  Site = c("AN", "HA", "LY", "OC", "WA_JP", "WM_JP", "L_TH", "WM_sb", "WA_sb", "CO_sb"),
-  ONeill = c(2.553374, 2.330625, 2.494801, 2.271436, 2.172176, 2.466872, 0.02424638, 2.771941, 2.575191, 2.431056),
-  MinRange = c(0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000, 0.000000),
-  MaxRange = c(4.158883, 4.158883, 4.394449, 4.158883, 4.394449, 4.394449, 1.386294, 4.158883, 4.158883, 4.158883)
-)
-
-# Plot the data
-ggplot(data, aes(x = Site)) +
-  geom_point(aes(y = ONeill), color = "blue", size = 3) +
-  geom_errorbar(aes(ymin = MinRange, ymax = MaxRange), width = 0.2, color = "red") +
-  labs(title = "O'Neill Values and Ranges for Each Site",
-       x = "Site",
-       y = "O'Neill Value / Range") +
-  theme_minimal()
-
-
-
-# Results with Home Range
-# AN
-# $oneill
-# [1] 2.553374
-# 
-# $range
-# Min      Max 
-# 0.000000 4.158883 
-# 
-# $rel.oneill
-# [1] 0.6139567
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0     4759 2.232627e-02
-# 2    0-10     3541 1.661217e-02
-# 3    0-30     1943 9.115347e-03
-# 4     0-5      532 2.495813e-03
-# 5    0-50     5652 2.651567e-02
-# 6    0-60      364 1.707661e-03
-# 7    0-80        2 9.382755e-06
-# 8    10-0     3593 1.685612e-02
-# 9   10-10    76707 3.598615e-01
-# 10  10-30     2887 1.354401e-02
-# 11   10-5     2975 1.395685e-02
-# 12  10-50     2334 1.094968e-02
-# 13  10-60      667 3.129149e-03
-# 14  10-80      200 9.382755e-04
-# 15   30-0     2173 1.019436e-02
-# 16  30-10     2695 1.264326e-02
-# 17  30-30    21756 1.020656e-01
-# 18  30-40        6 2.814827e-05
-# 19   30-5      833 3.907918e-03
-# 20  30-50     1858 8.716580e-03
-# 21  30-60      349 1.637291e-03
-# 22  30-80      156 7.318549e-04
-# 23   40-0        4 1.876551e-05
-# 24  40-30        3 1.407413e-05
-# 25  40-40        7 3.283964e-05
-# 26    5-0      566 2.655320e-03
-# 27   5-10     2735 1.283092e-02
-# 28   5-30      700 3.283964e-03
-# 29    5-5    16026 7.518402e-02
-# 30   5-50     5774 2.708801e-02
-# 31   5-60      624 2.927420e-03
-# 32   50-0     5307 2.489714e-02
-# 33  50-10     2691 1.262450e-02
-# 34  50-30     2300 1.079017e-02
-# 35   50-5     5394 2.530529e-02
-# 36  50-50    19533 9.163668e-02
-# 37  50-60      576 2.702234e-03
-# 38  50-80       20 9.382755e-05
-# 39   60-0      356 1.670130e-03
-# 40  60-10      617 2.894580e-03
-# 41  60-30      337 1.580994e-03
-# 42   60-5      643 3.016556e-03
-# 43  60-50      591 2.772604e-03
-# 44  60-60     1643 7.707934e-03
-# 45  60-80       43 2.017292e-04
-# 46   80-0        6 2.814827e-05
-# 47  80-10      113 5.301257e-04
-# 48  80-30       60 2.814827e-04
-# 49  80-50       35 1.641982e-04
-# 50  80-60       15 7.037067e-05
-# 51  80-80    10456 4.905305e-02
-
-# HA
-# $oneill
-# [1] 2.330625
-# 
-# $range
-# Min      Max 
-# 0.000000 4.158883 
-# 
-# $rel.oneill
-# [1] 0.5603968
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0     3173 1.569332e-02
-# 2    0-10     4150 2.052545e-02
-# 3    0-30     1490 7.369379e-03
-# 4     0-5      132 6.528577e-04
-# 5    0-50     1901 9.402141e-03
-# 6    0-60      139 6.874790e-04
-# 7    10-0     3973 1.965003e-02
-# 8   10-10    84737 4.191000e-01
-# 9   10-30     3356 1.659841e-02
-# 10   10-5     6339 3.135201e-02
-# 11  10-50     2389 1.181574e-02
-# 12  10-60      863 4.268305e-03
-# 13  10-80        6 2.967535e-05
-# 14   30-0     1674 8.279423e-03
-# 15  30-10     3418 1.690506e-02
-# 16  30-30    32646 1.614636e-01
-# 17  30-40        2 9.891784e-06
-# 18   30-5     1509 7.463351e-03
-# 19  30-50     1430 7.072625e-03
-# 20  30-60      327 1.617307e-03
-# 21  30-80       16 7.913427e-05
-# 22  40-30        2 9.891784e-06
-# 23    5-0      154 7.616674e-04
-# 24   5-10     5543 2.741508e-02
-# 25   5-30     1384 6.845114e-03
-# 26    5-5     9378 4.638257e-02
-# 27   5-50     5493 2.716778e-02
-# 28   5-60     1207 5.969692e-03
-# 29   50-0     1794 8.872930e-03
-# 30  50-10     3146 1.555978e-02
-# 31  50-30     1849 9.144954e-03
-# 32   50-5     4569 2.259778e-02
-# 33  50-50     9276 4.587809e-02
-# 34  50-60      367 1.815142e-03
-# 35   60-0      179 8.853147e-04
-# 36  60-10      846 4.184225e-03
-# 37  60-30      343 1.696441e-03
-# 38   60-5     1124 5.559183e-03
-# 39  60-50      420 2.077275e-03
-# 40  60-60     1399 6.919303e-03
-# 41  60-80        1 4.945892e-06
-# 42  80-10        8 3.956714e-05
-# 43  80-30       15 7.418838e-05
-# 44  80-80       21 1.038637e-04
-
-# LY
-# $oneill
-# [1] 2.494801
-# 
-# $range
-# Min      Max 
-# 0.000000 4.394449 
-# 
-# $rel.oneill
-# [1] 0.5677164
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0    25714 1.930862e-02
-# 2    0-10    16978 1.274876e-02
-# 3    0-30    11891 8.928940e-03
-# 4     0-5     1998 1.500296e-03
-# 5    0-50    27874 2.093056e-02
-# 6    0-60     1955 1.468008e-03
-# 7    0-80        3 2.252697e-06
-# 8    10-0    16865 1.266391e-02
-# 9   10-10   301037 2.260484e-01
-# 10  10-30    19912 1.495190e-02
-# 11   10-5    24536 1.842406e-02
-# 12  10-50    13910 1.044501e-02
-# 13  10-60     3457 2.595858e-03
-# 14  10-80      122 9.160968e-05
-# 15  10-90        1 7.508990e-07
-# 16   30-0    13326 1.000648e-02
-# 17  30-10    20178 1.515164e-02
-# 18  30-30   401283 3.013230e-01
-# 19  30-40      123 9.236058e-05
-# 20   30-5     7919 5.946369e-03
-# 21  30-50    12939 9.715882e-03
-# 22  30-60     3663 2.750543e-03
-# 23  30-80      423 3.176303e-04
-# 24  30-90        6 4.505394e-06
-# 25   40-0        5 3.754495e-06
-# 26  40-30      120 9.010788e-05
-# 27  40-40      506 3.799549e-04
-# 28   40-5        4 3.003596e-06
-# 29  40-50        8 6.007192e-06
-# 30  40-60        7 5.256293e-06
-# 31    5-0     2472 1.856222e-03
-# 32   5-10    21420 1.608426e-02
-# 33   5-30     6853 5.145911e-03
-# 34   5-40        3 2.252697e-06
-# 35    5-5    75382 5.660427e-02
-# 36   5-50    44272 3.324380e-02
-# 37   5-60     4953 3.719203e-03
-# 38   50-0    25944 1.948132e-02
-# 39  50-10    17313 1.300031e-02
-# 40  50-30    15703 1.179137e-02
-# 41  50-40        8 6.007192e-06
-# 42   50-5    40373 3.031605e-02
-# 43  50-50   112897 8.477425e-02
-# 44  50-60     3596 2.700233e-03
-# 45  50-80       12 9.010788e-06
-# 46   60-0     2047 1.537090e-03
-# 47  60-10     3440 2.583093e-03
-# 48  60-30     3501 2.628897e-03
-# 49  60-40        4 3.003596e-06
-# 50   60-5     5018 3.768011e-03
-# 51  60-50     3644 2.736276e-03
-# 52  60-60    12817 9.624273e-03
-# 53  60-80       60 4.505394e-05
-# 54  60-90        8 6.007192e-06
-# 55   80-0        8 6.007192e-06
-# 56  80-10      109 8.184799e-05
-# 57  80-30      412 3.093704e-04
-# 58  80-50       17 1.276528e-05
-# 59  80-60       72 5.406473e-05
-# 60  80-80     2586 1.941825e-03
-# 61  90-30       12 9.010788e-06
-# 62  90-60        5 3.754495e-06
-# 63  90-90       13 9.761687e-06
-
-# OC
-# $oneill
-# [1] 2.271436
-# 
-# $range
-# Min      Max 
-# 0.000000 4.158883 
-# 
-# $rel.oneill
-# [1] 0.5461649
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0    13918 1.821411e-02
-# 2    0-10    11935 1.561901e-02
-# 3    0-30     4863 6.364075e-03
-# 4     0-5      885 1.158175e-03
-# 5    0-50    13743 1.798509e-02
-# 6    0-60     1089 1.425145e-03
-# 7    0-80        1 1.308673e-06
-# 8    10-0    12136 1.588205e-02
-# 9   10-10   322891 4.225586e-01
-# 10  10-30    10151 1.328434e-02
-# 11   10-5    14391 1.883311e-02
-# 12  10-50     8857 1.159091e-02
-# 13  10-60     2337 3.058368e-03
-# 14  10-80       88 1.151632e-04
-# 15   30-0     5687 7.442422e-03
-# 16  30-10     9932 1.299774e-02
-# 17  30-30   133921 1.752588e-01
-# 18  30-40        1 1.308673e-06
-# 19   30-5     3174 4.153727e-03
-# 20  30-50     5889 7.706774e-03
-# 21  30-60     1111 1.453935e-03
-# 22  30-80      119 1.557321e-04
-# 23   40-0        1 1.308673e-06
-# 24  40-30        2 2.617345e-06
-# 25  40-50        1 1.308673e-06
-# 26    5-0     1033 1.351859e-03
-# 27   5-10    12782 1.672745e-02
-# 28   5-30     2744 3.590998e-03
-# 29   5-40        1 1.308673e-06
-# 30    5-5    33216 4.346887e-02
-# 31   5-50    18118 2.371053e-02
-# 32   5-60     1771 2.317659e-03
-# 33   50-0    12575 1.645656e-02
-# 34  50-10    11048 1.445822e-02
-# 35  50-30     6790 8.885888e-03
-# 36  50-40        1 1.308673e-06
-# 37   50-5    16190 2.118741e-02
-# 38  50-50    52799 6.909661e-02
-# 39  50-60     1833 2.398797e-03
-# 40  50-80       12 1.570407e-05
-# 41   60-0     1099 1.438231e-03
-# 42  60-10     2273 2.974613e-03
-# 43  60-30     1084 1.418601e-03
-# 44  60-40        1 1.308673e-06
-# 45   60-5     1835 2.401414e-03
-# 46  60-50     1843 2.411884e-03
-# 47  60-60     4938 6.462226e-03
-# 48  60-80       37 4.842089e-05
-# 49   80-0        3 3.926018e-06
-# 50  80-10      144 1.884489e-04
-# 51  80-30      125 1.635841e-04
-# 52  80-50       14 1.832142e-05
-# 53  80-60       38 4.972956e-05
-# 54  80-80     2663 3.484995e-03
-
-# WA_JP
-# $oneill
-# [1] 2.172176
-# 
-# $range
-# Min      Max 
-# 0.000000 4.394449 
-# 
-# $rel.oneill
-# [1] 0.4943001
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0    21003 1.479177e-02
-# 2    0-10    12161 8.564621e-03
-# 3    0-30    10438 7.351165e-03
-# 4     0-5     1689 1.189511e-03
-# 5    0-50    22228 1.565450e-02
-# 6    0-60     1596 1.124014e-03
-# 7    0-80        2 1.408539e-06
-# 8    10-0    12163 8.566030e-03
-# 9   10-10   381064 2.683718e-01
-# 10  10-30    18017 1.268882e-02
-# 11  10-40        1 7.042695e-07
-# 12   10-5    16010 1.127535e-02
-# 13  10-50     7896 5.560912e-03
-# 14  10-60     2460 1.732503e-03
-# 15  10-80      197 1.387411e-04
-# 16   30-0    11439 8.056139e-03
-# 17  30-10    18435 1.298321e-02
-# 18  30-30   544687 3.836064e-01
-# 19  30-40      365 2.570584e-04
-# 20   30-5     5821 4.099553e-03
-# 21  30-50     9785 6.891277e-03
-# 22  30-60     3985 2.806514e-03
-# 23  30-80      577 4.063635e-04
-# 24  30-90        6 4.225617e-06
-# 25  40-10        3 2.112808e-06
-# 26  40-30      368 2.591712e-04
-# 27  40-40     1812 1.276136e-03
-# 28   40-5       11 7.746964e-06
-# 29  40-50       10 7.042695e-06
-# 30  40-60       12 8.451234e-06
-# 31    5-0     2143 1.509250e-03
-# 32   5-10    13753 9.685818e-03
-# 33   5-30     5043 3.551631e-03
-# 34   5-40       14 9.859773e-06
-# 35    5-5    57832 4.072931e-02
-# 36   5-50    33597 2.366134e-02
-# 37   5-60     4229 2.978356e-03
-# 38   50-0    20428 1.438682e-02
-# 39  50-10    10275 7.236369e-03
-# 40  50-30    12210 8.599131e-03
-# 41  50-40       13 9.155503e-06
-# 42   50-5    30887 2.175277e-02
-# 43  50-50    84443 5.947063e-02
-# 44  50-60     3242 2.283242e-03
-# 45  50-80       31 2.183235e-05
-# 46   60-0     1854 1.305716e-03
-# 47  60-10     2472 1.740954e-03
-# 48  60-30     3767 2.652983e-03
-# 49  60-40       11 7.746964e-06
-# 50   60-5     4208 2.963566e-03
-# 51  60-50     3219 2.267043e-03
-# 52  60-60    12825 9.032256e-03
-# 53  60-80       90 6.338425e-05
-# 54   80-0        7 4.929886e-06
-# 55  80-10      214 1.507137e-04
-# 56  80-30      527 3.711500e-04
-# 57  80-50       34 2.394516e-05
-# 58  80-60      106 7.465257e-05
-# 59  80-80     8184 5.763742e-03
-# 60  90-30        6 4.225617e-06
-# 61  90-90        6 4.225617e-06
-
-# WM_JP
-# $oneill
-# [1] 2.466872
-# 
-# $range
-# Min      Max 
-# 0.000000 4.394449 
-# 
-# $rel.oneill
-# [1] 0.5613609
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0    25269 1.668164e-02
-# 2    0-10    17583 1.160763e-02
-# 3    0-30    14177 9.359121e-03
-# 4    0-40       17 1.122276e-05
-# 5     0-5     1785 1.178390e-03
-# 6    0-50    27940 1.844493e-02
-# 7    0-60     1929 1.273453e-03
-# 8    0-80       96 6.337558e-05
-# 9    10-0    17784 1.174033e-02
-# 10  10-10   401689 2.651799e-01
-# 11  10-30    23056 1.522070e-02
-# 12   10-5    22563 1.489524e-02
-# 13  10-50    12905 8.519395e-03
-# 14  10-60     3283 2.167313e-03
-# 15  10-80      623 4.112811e-04
-# 16  10-90        1 6.601623e-07
-# 17   30-0    15941 1.052365e-02
-# 18  30-10    22415 1.479754e-02
-# 19  30-30   428899 2.831430e-01
-# 20  30-40      776 5.122860e-04
-# 21   30-5     7697 5.081269e-03
-# 22  30-50    13812 9.118162e-03
-# 23  30-60     3051 2.014155e-03
-# 24  30-80      912 6.020680e-04
-# 25  30-90        1 6.601623e-07
-# 26   40-0       29 1.914471e-05
-# 27  40-30      733 4.838990e-04
-# 28  40-40     3186 2.103277e-03
-# 29   40-5        2 1.320325e-06
-# 30  40-50        6 3.960974e-06
-# 31  40-60        5 3.300812e-06
-# 32    5-0     2137 1.410767e-03
-# 33   5-10    19724 1.302104e-02
-# 34   5-30     6504 4.293696e-03
-# 35   5-40        3 1.980487e-06
-# 36    5-5    72220 4.767692e-02
-# 37   5-50    36327 2.398172e-02
-# 38   5-60     4032 2.661774e-03
-# 39   5-80        6 3.960974e-06
-# 40   50-0    25574 1.688299e-02
-# 41  50-10    16035 1.058570e-02
-# 42  50-30    16875 1.114024e-02
-# 43  50-40        4 2.640649e-06
-# 44   50-5    32656 2.155826e-02
-# 45  50-50   108791 7.181972e-02
-# 46  50-60     3210 2.119121e-03
-# 47  50-80      172 1.135479e-04
-# 48   60-0     1836 1.212058e-03
-# 49  60-10     3303 2.180516e-03
-# 50  60-30     3090 2.039902e-03
-# 51  60-40        6 3.960974e-06
-# 52   60-5     3935 2.597739e-03
-# 53  60-50     3360 2.218145e-03
-# 54  60-60    10123 6.682823e-03
-# 55  60-80      222 1.465560e-04
-# 56   80-0      145 9.572353e-05
-# 57  80-10      750 4.951217e-04
-# 58  80-30      826 5.452941e-04
-# 59   80-5        6 3.960974e-06
-# 60  80-50      146 9.638370e-05
-# 61  80-60      207 1.366536e-04
-# 62  80-80    74387 4.910749e-02
-# 63  90-10        1 6.601623e-07
-# 64  90-80        1 6.601623e-07
-
-# L_TH
-# $oneill
-# [1] 0.02424638
-# 
-# $range
-# Min      Max 
-# 0.000000 1.386294 
-# 
-# $rel.oneill
-# [1] 0.01749007
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1  10-10   304719 0.9969051085
-# 2  10-30      249 0.0008146173
-# 3  30-10      251 0.0008211604
-# 4  30-30      446 0.0014591137
-
-# CO_sb
-# $oneill
-# [1] 2.431056
-# 
-# $range
-# Min      Max 
-# 0.000000 4.158883 
-# 
-# $rel.oneill
-# [1] 0.5845454
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0     8143 1.917511e-02
-# 2    0-10     6098 1.435955e-02
-# 3    0-30     2913 6.859525e-03
-# 4     0-5      403 9.489833e-04
-# 5    0-50     7984 1.880070e-02
-# 6    0-60      447 1.052594e-03
-# 7    0-80        2 4.709595e-06
-# 8    10-0     6157 1.449849e-02
-# 9   10-10    87737 2.066029e-01
-# 10  10-30     5827 1.372140e-02
-# 11   10-5    10809 2.545300e-02
-# 12  10-50     6730 1.584779e-02
-# 13  10-60      509 1.198592e-03
-# 14   30-0     3345 7.876797e-03
-# 15  30-10     5674 1.336112e-02
-# 16  30-30   143560 3.380547e-01
-# 17  30-40       25 5.886993e-05
-# 18   30-5     3075 7.241002e-03
-# 19  30-50     4217 9.930180e-03
-# 20  30-60      878 2.067512e-03
-# 21  30-80       44 1.036111e-04
-# 22   40-0        7 1.648358e-05
-# 23  40-30       34 8.006311e-05
-# 24  40-40       54 1.271591e-04
-# 25   40-5       10 2.354797e-05
-# 26  40-50       14 3.296716e-05
-# 27  40-60        7 1.648358e-05
-# 28    5-0      597 1.405814e-03
-# 29   5-10     9543 2.247183e-02
-# 30   5-30     2807 6.609916e-03
-# 31   5-40       19 4.474115e-05
-# 32    5-5    19681 4.634477e-02
-# 33   5-50    14121 3.325209e-02
-# 34   5-60      467 1.099690e-03
-# 35   50-0     7092 1.670022e-02
-# 36  50-10     8338 1.963430e-02
-# 37  50-30     4908 1.155735e-02
-# 38  50-40       11 2.590277e-05
-# 39   50-5    12649 2.978583e-02
-# 40  50-50    31642 7.451050e-02
-# 41  50-60     1100 2.590277e-03
-# 42   60-0      619 1.457620e-03
-# 43  60-10      472 1.111464e-03
-# 44  60-30      830 1.954482e-03
-# 45  60-40       17 4.003155e-05
-# 46   60-5      563 1.325751e-03
-# 47  60-50      932 2.194671e-03
-# 48  60-60     3235 7.617769e-03
-# 49  60-80       19 4.474115e-05
-# 50   80-0        3 7.064392e-06
-# 51  80-30       32 7.535351e-05
-# 52   80-5        1 2.354797e-06
-# 53  80-50        1 2.354797e-06
-# 54  80-60       28 6.593432e-05
-# 55  80-80      235 5.533774e-04
-
-# WM_sb
-# $oneill
-# [1] 2.771941
-# 
-# $range
-# Min      Max 
-# 0.000000 4.158883 
-# 
-# $rel.oneill
-# [1] 0.666511
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0    10312 2.211276e-02
-# 2    0-10     8630 1.850593e-02
-# 3    0-30     5624 1.205995e-02
-# 4     0-5      711 1.524648e-03
-# 5    0-50     9477 2.032221e-02
-# 6    0-60      840 1.801272e-03
-# 7    0-80       45 9.649674e-05
-# 8    10-0     8686 1.862602e-02
-# 9   10-10   124409 2.667792e-01
-# 10  10-30     8329 1.786047e-02
-# 11   10-5    11610 2.489616e-02
-# 12  10-50     5552 1.190555e-02
-# 13  10-60     1937 4.153649e-03
-# 14  10-80       72 1.543948e-04
-# 15   30-0     6129 1.314286e-02
-# 16  30-10     8322 1.784546e-02
-# 17  30-30    75646 1.622132e-01
-# 18  30-40        3 6.433116e-06
-# 19   30-5     4017 8.613942e-03
-# 20  30-50     5249 1.125581e-02
-# 21  30-60     1306 2.800550e-03
-# 22  30-80      204 4.374519e-04
-# 23   40-0        1 2.144372e-06
-# 24  40-30        2 4.288744e-06
-# 25  40-40       10 2.144372e-05
-# 26   40-5        2 4.288744e-06
-# 27  40-50        6 1.286623e-05
-# 28  40-60        1 2.144372e-06
-# 29    5-0      855 1.833438e-03
-# 30   5-10    10183 2.183614e-02
-# 31   5-30     3399 7.288720e-03
-# 32   5-40        3 6.433116e-06
-# 33    5-5    30135 6.462065e-02
-# 34   5-50    13508 2.896618e-02
-# 35   5-60     2769 5.937766e-03
-# 36   5-80        2 4.288744e-06
-# 37   50-0     8787 1.884260e-02
-# 38  50-10     6970 1.494627e-02
-# 39  50-30     6456 1.384407e-02
-# 40  50-40        4 8.577488e-06
-# 41   50-5    11700 2.508915e-02
-# 42  50-50    34907 7.485359e-02
-# 43  50-60     1580 3.388108e-03
-# 44  50-80       16 3.430995e-05
-# 45   60-0      823 1.764818e-03
-# 46  60-10     1956 4.194392e-03
-# 47  60-30     1343 2.879892e-03
-# 48  60-40        2 4.288744e-06
-# 49   60-5     2586 5.545346e-03
-# 50  60-50     1702 3.649721e-03
-# 51  60-60     4929 1.056961e-02
-# 52  60-80       82 1.758385e-04
-# 53   80-0       47 1.007855e-04
-# 54  80-10      137 2.937790e-04
-# 55  80-30      271 5.811248e-04
-# 56   80-5        3 6.433116e-06
-# 57  80-50       32 6.861990e-05
-# 58  80-60       47 1.007855e-04
-# 59  80-80    23971 5.140274e-02
-
-# WA_sb
-# $oneill
-# [1] 2.575191
-# 
-# $range
-# Min      Max 
-# 0.000000 4.158883 
-# 
-# $rel.oneill
-# [1] 0.6192027
-# 
-# $probabilities
-# couple abs.freq     rel.freq
-# 1     0-0    10904 2.048881e-02
-# 2    0-10     8157 1.532715e-02
-# 3    0-30     5592 1.050747e-02
-# 4     0-5      685 1.287127e-03
-# 5    0-50     9885 1.857409e-02
-# 6    0-60      839 1.576496e-03
-# 7    10-0     8058 1.514112e-02
-# 8   10-10   109349 2.054687e-01
-# 9   10-30     9327 1.752560e-02
-# 10   10-5    12109 2.275302e-02
-# 11  10-50     5709 1.072731e-02
-# 12  10-60     1716 3.224394e-03
-# 13  10-80       37 6.952365e-05
-# 14   30-0     6303 1.184345e-02
-# 15  30-10     9593 1.802542e-02
-# 16  30-30   161468 3.034012e-01
-# 17  30-40       14 2.630625e-05
-# 18   30-5     3918 7.361991e-03
-# 19  30-50     5459 1.025756e-02
-# 20  30-60     2184 4.103774e-03
-# 21  30-80      249 4.678754e-04
-# 22   40-0        1 1.879018e-06
-# 23  40-30        9 1.691116e-05
-# 24  40-40       23 4.321740e-05
-# 25   40-5        4 7.516070e-06
-# 26  40-50        8 1.503214e-05
-# 27  40-60        7 1.315312e-05
-# 28    5-0      893 1.677963e-03
-# 29   5-10    10469 1.967143e-02
-# 30   5-30     3390 6.369870e-03
-# 31   5-40        3 5.637053e-06
-# 32    5-5    29152 5.477712e-02
-# 33   5-50    15718 2.953440e-02
-# 34   5-60     2678 5.032009e-03
-# 35   50-0     8975 1.686418e-02
-# 36  50-10     7427 1.395546e-02
-# 37  50-30     6793 1.276417e-02
-# 38  50-40        8 1.503214e-05
-# 39   50-5    13721 2.578200e-02
-# 40  50-50    41870 7.867447e-02
-# 41  50-60     1589 2.985759e-03
-# 42  50-80        5 9.395088e-06
-# 43   60-0      889 1.670447e-03
-# 44  60-10     1717 3.226273e-03
-# 45  60-30     2143 4.026735e-03
-# 46  60-40        4 7.516070e-06
-# 47   60-5     2636 4.953090e-03
-# 48  60-50     1620 3.044008e-03
-# 49  60-60     7298 1.371307e-02
-# 50  60-80       36 6.764463e-05
-# 51   80-0        3 5.637053e-06
-# 52  80-10       45 8.455579e-05
-# 53  80-30      234 4.396901e-04
-# 54  80-50       11 2.066919e-05
-# 55  80-60       34 6.388660e-05
-# 56  80-80     1225 2.301797e-03

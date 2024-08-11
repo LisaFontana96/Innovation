@@ -10,7 +10,7 @@ library(summarytools)
 library(lme4)  
 library(lmerTest) 
  
-data<- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/ANALYSIS/DataCleaning/Dataset_Neophobia2.0.csv')
+data<- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/ANALYSIS/DataCleaning/Finaldataset_SCC.csv')
 
 #########Data cleaning###########
 data$Approach.start <- as_hms(data$Approach.start)
@@ -36,7 +36,8 @@ solving_data<- na.omit(data[, c("Solving.time", "Roost", "Level")])
 final_dataset<-left_join(firstapproach_data, solving_data, by = c("Roost", "Level"))
 
 ##To compute
-final_dataset$Latency_Solving <- as.numeric(difftime(final_dataset$Solving.time, final_dataset$Approach.start, units = "secs")) #Latency until solving
+final_dataset$Latency_Solving <- as.numeric(difftime(final_dataset$Solving.time, final_dataset$Approach.start, units = "secs")) #Latency until solving from first approach start
+final_dataset$Latency_Solving2 <- as.numeric(difftime(final_dataset$Solving.time, final_dataset$Installation.time.end., units = "secs")) #Latency until solving from installation end
 final_dataset <- final_dataset %>% 
   left_join(aggregate(data$ApproachDuration ~ Roost + Level + Roost.size, data = data, mean), #Mean approach duration
             by = c("Roost", "Level", "Roost.size"))
