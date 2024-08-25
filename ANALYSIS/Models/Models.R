@@ -141,68 +141,112 @@ model_solving2 <- brm(Solved ~  Latency_std +
                       cores = 6, iter = 15000, control = list(adapt_delta = 0.99))
 summary(model_solving2)
 
-### Censored model Latency until solving (Solving time= Solving time - first approach start###
-final_dataset_solving$is_censored <- ifelse(is.na(final_dataset_solving$Latency_Solving), 1, 0)
-final_dataset_solving$max_latency<- as.numeric(difftime(final_dataset_solving$Took.down.or.Solving, final_dataset_solving$Installation.time.end., units = "secs")) #Compute max latency for each level, either when solved or when uninstalled
-final_dataset_solving<- final_dataset_solving %>%
-  mutate(Latency_solving_censored = ifelse(is.na(Latency_Solving), max_latency, Latency_Solving)) #New columns with latency solving data integrated with censored data (max latency instead of NAs)
-
-#Weibull
-model_solving3 <- brm(log(Latency_solving_censored) | cens(is_censored) ~ 
-                       scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
-                       (1 | Roost), 
-                     data = final_dataset_solving, 
-                     family = weibull(link = "log"), 
-                     cores = 6, 
-                     iter = 15000,
-                     control = list(adapt_delta = 0.99999))
-summary(model_solving3)
-
-#Lognormal 
-model_solving3 <- brm(
-  log(Latency_solving_censored) | cens(is_censored) ~ 
-    scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
-    (1 | Roost), 
-  data = final_dataset_solving, 
-  family = lognormal(), 
-  cores = 6, 
-  iter = 15000,
-  control = list(adapt_delta = 0.99999)
-)
-
-# model_solving3_lognormal <- brm(
-#   bf(Latency_Solving | cens(is_censored) ~ O.Neill + Roost.size + UI + Level + (1 | Roost)), 
-#   data = final_dataset_firstapproach, 
-#   family = lognormal(),
-#   cores = 6, 
-#   iter = 15000, 
-#   control = list(adapt_delta = 0.999)
-# )
-
 ### Censored model Latency until solving (Solving time= Solving time - Installation time end###
 final_dataset_solving<- final_dataset_solving %>%
   mutate(Latency_solving_censored = ifelse(is.na(Latency_Solving2), max_latency, Latency_Solving2)) #New columns with latency solving data integrated with censored data (max latency instead of NAs)
 
-#Weibull
-model_solving4 <- brm(log(Latency_solving_censored) | cens(is_censored) ~ 
-                        scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
-                        (1 | Roost), 
-                      data = final_dataset_solving, 
-                      family = weibull(link = "log"), 
-                      cores = 6, 
-                      iter = 15000,
-                      control = list(adapt_delta = 0.99999))
-summary(model_solving4)
+##Weibull##
+# model_solving4 <- brm(Latency_solving_censored | cens(is_censored) ~ 
+#                         scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
+#                         (1 | Roost), 
+#                       data = final_dataset_solving, 
+#                       family = weibull(link = "log"), 
+#                       cores = 6, 
+#                       iter = 15000,
+#                       control = list(adapt_delta = 0.99999),  save_pars = save_pars(all = TRUE))
+# summary(model_solving4)
+# 
+# #Log transformed latency
+# model_solving4b <- brm(log(Latency_solving_censored) | cens(is_censored) ~ 
+#                         scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
+#                         (1 | Roost), 
+#                       data = final_dataset_solving, 
+#                       family = weibull(link = "log"), 
+#                       cores = 6, 
+#                       iter = 15000,
+#                       warmup = 7500,
+#                       control = list(adapt_delta = 0.99999,max_treedepth=15), save_pars = save_pars(all = TRUE))
+# summary(model_solving4b)
+# pp_check(model_solving4b)
+# conditional_effects(model_solving4b)
+# 
+# ##Lognormal##
+# model_solving5 <- brm(
+#   Latency_solving_censored | cens(is_censored) ~ 
+#     scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
+#     (1 | Roost), 
+#   data = final_dataset_solving, 
+#   family = lognormal(), 
+#   cores = 6, 
+#   iter = 15000,
+#   control = list(adapt_delta = 0.99999),  save_pars = save_pars(all = TRUE)
+# )
+# summary(model_solving5)
+# pp_check(model_solving5)
+# 
+# #Log transformed latency
+# model_solving5b <- brm(
+#   log(Latency_solving_censored) | cens(is_censored) ~ 
+#     scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
+#     (1 | Roost), 
+#   data = final_dataset_solving, 
+#   family = lognormal(), 
+#   cores = 6, 
+#   iter = 15000,
+#   control = list(adapt_delta = 0.9999999),  save_pars = save_pars(all = TRUE)
+# )
+# summary(model_solving5b)
+# pp_check(model_solving5b)
 
-#Lognormal
-model_solving4 <- brm(
+## Log transformed latency, Gaussian family ; WINNING MODEL ##
+model_solving5c <- brm(
   log(Latency_solving_censored) | cens(is_censored) ~ 
     scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
     (1 | Roost), 
   data = final_dataset_solving, 
-  family = lognormal(), 
+  family = gaussian(), 
   cores = 6, 
   iter = 15000,
-  control = list(adapt_delta = 0.99999)
+  control = list(adapt_delta = 0.9999999),  save_pars = save_pars(all = TRUE)
 )
+summary(model_solving5c)
+pp_check(model_solving5c)
 
+# ### Censored model Latency until solving (Solving time= Solving time - first approach start###
+# final_dataset_solving$is_censored <- ifelse(is.na(final_dataset_solving$Latency_Solving), 1, 0)
+# final_dataset_solving$max_latency<- as.numeric(difftime(final_dataset_solving$Took.down.or.Solving, final_dataset_solving$Installation.time.end., units = "secs")) #Compute max latency for each level, either when solved or when uninstalled
+# final_dataset_solving<- final_dataset_solving %>%
+#   mutate(Latency_solving_censored = ifelse(is.na(Latency_Solving), max_latency, Latency_Solving)) #New columns with latency solving data integrated with censored data (max latency instead of NAs)
+# 
+# #Weibull
+# model_solving3 <- brm(log(Latency_solving_censored) | cens(is_censored) ~ 
+#                         scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
+#                         (1 | Roost), 
+#                       data = final_dataset_solving, 
+#                       family = weibull(link = "log"), 
+#                       cores = 6, 
+#                       iter = 15000,
+#                       control = list(adapt_delta = 0.99999))
+# summary(model_solving3)
+# 
+# #Lognormal 
+# model_solving3 <- brm(
+#   log(Latency_solving_censored) | cens(is_censored) ~ 
+#     scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + 
+#     (1 | Roost), 
+#   data = final_dataset_solving, 
+#   family = lognormal(), 
+#   cores = 6, 
+#   iter = 15000,
+#   control = list(adapt_delta = 0.99999)
+# )
+# 
+# # model_solving3_lognormal <- brm(
+# #   bf(Latency_Solving | cens(is_censored) ~ O.Neill + Roost.size + UI + Level + (1 | Roost)), 
+# #   data = final_dataset_firstapproach, 
+# #   family = lognormal(),
+# #   cores = 6, 
+# #   iter = 15000, 
+# #   control = list(adapt_delta = 0.999)
+# # )
+# 

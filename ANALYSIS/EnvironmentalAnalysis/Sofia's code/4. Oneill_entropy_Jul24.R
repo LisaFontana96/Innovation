@@ -839,6 +839,19 @@ NAR_landcover_matrix <- as.matrix(NAR_landcover)
 oneill (NAR_landcover_matrix)
 #Oneill NAR 2.439549, relative 0.5551433
 
+#Create and save single .csv for ONeill
+Site<- c('ANU', 'CK', 'CP', 'GPM', 'GU', 'HA', 'HIG', 'LG', 'LY', 'NAR', 'OC', 'TP', 'WA', 'WM', 'YA')
+ONeill<- c(2.38556, 1.872539, 2.612594, 2.296363, 2.431183, 2.022477, 2.56934, 2.711737, 2.804285, 2.439549, 2.310014, 2.84118, 2.364287, 2.569044, 2.501617)
+ONeill<- data.frame(Site, ONeill)
+
+# Create a bar plot for Urbanization Index
+ggplot(ONeill, aes(x = Site, y = ONeill)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "O'Neill index by Site",
+       x = "Site",
+       y = "O'Neill Index") +
+  theme_minimal()
+
 ###############################################################################
 ###############################################################################
 # Oneill entropy for home range rather than specific area from roost 

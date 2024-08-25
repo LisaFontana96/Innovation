@@ -37,9 +37,9 @@ print(index_df)
 # Create a bar plot for Urbanization Index
 ggplot(slocsb, aes(x = site, y = Urbanization_Index)) +
   geom_bar(stat = "identity", fill = "steelblue") +
-  labs(title = "Urbanization Index by Site",
+  labs(title = "Urbanisation Index by Site",
        x = "Site",
-       y = "Urbanization Index") +
+       y = "Urbanisation Index") +
   theme_minimal()
 
 

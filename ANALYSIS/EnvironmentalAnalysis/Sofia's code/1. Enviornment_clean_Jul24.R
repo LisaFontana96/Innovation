@@ -172,6 +172,7 @@ slocsb$L_Open <- unlist(lapply(local, function(x)
   sum((table(Buildings$ZONE_CD_NM[x])/length(x)*100)[c('Recreational/Open Space', 'Conservation/National Park')], na.rm=T) ))
 slocsb$L_Urbanf <- unlist(lapply(local, function(x)
   sum((table(Buildings$ZONE_CD_NM[x])/length(x)*100)[c('Transport/Infrastructure','Water','Special Use')], na.rm=T) ))
+slocsb$site[slocsb$site == "NA"] <- "NAR"
 
 # save file
 save(slocsb, file = '~/site_char.R')
