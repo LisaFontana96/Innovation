@@ -84,4 +84,3 @@ slocsb$site[slocsb$site == "NA"] <- "NAR"
 
 # save file
 save(slocsb, file = '~/site_char.R')
-save(slocsb, file = '~/site_char.R')

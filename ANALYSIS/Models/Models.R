@@ -31,7 +31,12 @@ final_dataset_solving$Installation.time.end. <- as.POSIXct(final_dataset_solving
 final_dataset_solving$Took.down.or.Solving <- as.POSIXct(final_dataset_solving$Took.down.or.Solving, format = "%d/%m/%Y %H:%M")
 final_dataset_solving$Solving.time <- as.POSIXct(final_dataset_solving$Solving.time, format = "%d/%m/%Y %H:%M:%S")
 
-# #####Correlation testing#####
+#From seconds to days
+final_dataset_firstapproach$Lat1stappr_days<- final_dataset_firstapproach$Latency_1stapproach/86400
+final_dataset_solving$LatSolv_days<- final_dataset_solving$Latency_Solving/86400
+final_dataset_solving$LatSolv_days2<- final_dataset_solving$Latency_Solving2/86400
+
+#####Correlation testing#####
 ###Environmental variables
 correlation_matrix_environment <- cor(cbind(final_dataset_firstapproach$UI, final_dataset_firstapproach$O.Neill, final_dataset_firstapproach$Roost.size))
 print(correlation_matrix_environment)
@@ -88,6 +93,10 @@ ggplot(final_dataset_firstapproach, aes(x = UI)) +
 #relevel(ref="R")
 #final_dataset_firstapproach$Level <- final_dataset_firstapproach$Level %>%
 #relevel(ref="1")
+#final_dataset_solving$Level <- final_dataset_solving$Level %>%
+#relevel(ref="1")
+#final_dataset_solving$Position <- final_dataset_solving$;Position %>%
+#relevel(ref="R")
 
 ### Censored model latency ###
 ## Prepare data for censored model##
@@ -100,9 +109,9 @@ final_dataset_firstapproach <- final_dataset_firstapproach %>%
 #                           (1 | Roost),
 #                         data = final_dataset_firstapproach,
 #                         family = gaussian(),
-#                         cores = 6,
+#                          cores = 6,
 #                         iter = 15000,
-#                         control = list(adapt_delta = 0.999))
+#                        control = list(adapt_delta = 0.999))
 # summary(model_1stapproach)
 #POSITION has no effect, therefore I removed it (not the main variable of interest)
 
@@ -115,11 +124,10 @@ model_1stapproach<- brm(log(Latency_1stappr_censored) | cens(is_censored) ~ scal
                         control = list(adapt_delta = 0.999))
 summary(model_1stapproach)
 
-
 ###SOLVING 1/0 AND LATENCY UNTIL SOLVING###
 
 ### Solved or not ###
-# model_solving <- brm(Solved ~ UI + O.Neill + Position + Level +
+# model_solving <- brm(Solved ~ UI + O.Neill + Roost.size + Position + Level +
 #                        (1 | Roost),
 #                      data = final_dataset_firstapproach,
 #                      family = bernoulli(link = "logit"),
@@ -203,6 +211,17 @@ final_dataset_solving$max_latency<- as.numeric(difftime(final_dataset_solving$To
 final_dataset_solving<- final_dataset_solving %>%
   mutate(Latency_solving_censored = ifelse(is.na(Latency_Solving2), max_latency, Latency_Solving2)) #New columns with latency solving data integrated with censored data (max latency instead of NAs)
 
+# model_solving5c <- brm(
+#   log(Latency_solving_censored) | cens(is_censored) ~ 
+#     scale(O.Neill) + scale(Roost.size) + scale(UI) + Level + Position +
+#     (1 | Roost), 
+#   data = final_dataset_solving, 
+#   family = gaussian(), 
+#   cores = 6, 
+#   iter = 15000,
+#   control = list(adapt_delta = 0.9999999),  save_pars = save_pars(all = TRUE)
+# )
+#POSITION has no effect, therefore I removed it (not the main variable of interest)
 
 model_solving5c <- brm(
   log(Latency_solving_censored) | cens(is_censored) ~ 
@@ -217,44 +236,11 @@ model_solving5c <- brm(
 summary(model_solving5c)
 pp_check(model_solving5c)
 
-## Graphs ##
+#### Graphs #### 
 conditional_effects(model_1stapproach)
 conditional_effects(model_solving)
 conditional_effects(model_solving2)
 conditional_effects(model_solving5c)
-
-# Step 1: Extract conditional effects
-effects_1stapproach <- conditional_effects(model_1stapproach)
-
-# Step 2: Back-transform the O'Neill index, roost size, and latency
-# Assuming that O.Neill, Roost.size, and UI were scaled using the scale() function:
-mean_O.Neill <- mean(final_dataset_firstapproach$O.Neill, na.rm = TRUE)
-sd_O.Neill <- sd(final_dataset_firstapproach$O.Neill, na.rm = TRUE)
-mean_Roost.size <- mean(final_dataset_firstapproach$Roost.size, na.rm = TRUE)
-sd_Roost.size <- sd(final_dataset_firstapproach$Roost.size, na.rm = TRUE)
-mean_UI <- mean(final_dataset_firstapproach$UI, na.rm = TRUE)
-sd_UI <- sd(final_dataset_firstapproach$UI, na.rm = TRUE)
-
-# Step 3: Create a new data frame for the plot with unscaled values
-effects$`scale(O.Neill):scale(Roost.size):scale(UI):Level` <- effects$`scale(O.Neill):scale(Roost.size):scale(UI):Level` %>%
-  mutate(
-    O.Neill = effect1__ * sd_O.Neill + mean_O.Neill,
-    Roost.size = effect2__ * sd_Roost.size + mean_Roost.size,
-    UI = effect3__ * sd_UI + mean_UI,
-    Latency = exp(estimate__) # Back-transform from log to original scale
-  )
-
-# Step 4: Plot the results
-ggplot(effects$`scale(O.Neill):scale(Roost.size):scale(UI):Level`, aes(x = O.Neill, y = Latency, color = Level)) +
-  geom_line() +
-  facet_wrap(~Roost.size + UI, scales = "free") +
-  labs(
-    title = "Conditional Effects Plot",
-    x = "O'Neill Index",
-    y = "Latency until 1st Approach (seconds)"
-  ) +
-  theme_minimal()
-
 
 # ### Censored model Latency until solving (Solving time= Solving time - first approach start###
 # final_dataset_solving$is_censored <- ifelse(is.na(final_dataset_solving$Latency_Solving), 1, 0)

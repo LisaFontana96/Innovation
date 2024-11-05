@@ -103,3 +103,9 @@ Oneill_index<- data.frame(Site = Sites, ONeill_Index = ONeill)
 file_path <- "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/ONeill_index.csv"
 write.csv(Oneill_index, file = file_path, row.names = FALSE)
 
+ggplot(Oneill_index, aes(x = Site, y = ONeill)) +
+  geom_bar(stat = "identity", fill = "steelblue") +
+  labs(title = "O'Neill index by Site",
+       x = "Site",
+       y = "O'Neill Index") +
+  theme_minimal()
