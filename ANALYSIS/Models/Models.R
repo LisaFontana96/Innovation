@@ -53,7 +53,7 @@ cortest5<- cor.test(final_dataset_firstapproach$Latency_1stapproach, final_datas
 print(cortest5) #Moderate to strong negative correlation -0.61 pvalue 0.001
 cortest6<- cor.test(final_dataset_firstapproach$Latency_1stapproach, final_dataset_firstapproach$Roost.size, method = "pearson", use = "complete.obs")
 print(cortest6) #Weak negative correlation -0.18 not significant
-#Roost size is significantly positively correlated with the Shannon index, while the latency until first approach is significantly negatively correlated with Shannon index
+#Roost size is significantly positively correlated with the O'Neill index, while the latency until first approach is significantly negatively correlated with Shannon index
 
 #####Variables distribution#####
 ###O'Neill index

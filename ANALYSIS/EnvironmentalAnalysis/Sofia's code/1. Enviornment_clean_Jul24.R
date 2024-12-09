@@ -88,11 +88,11 @@ Proj <- st_crs(4326)
 # # Write the Buildings dataset to a shapefile
 # st_write(Buildings, output_path)
 
-Buildings<-st_read('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/Layers/Buildings/Buildings.shp')
+Buildings<-st_read('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/Layers/Buildings/Buildings.shp')
 Buildings<- st_transform(Buildings, st_crs(Proj))
 
 # load landcover raster 
-Hab <- raster('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/Layers/Landcover_10m.tif')
+Hab <- raster('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/Layers/Landcover_10m.tif')
 # Define the legend
 key <- data.frame(
   feature = c(
@@ -133,7 +133,7 @@ key <- key[order(key$code),]
 # to use a shp move to next section
 # load csv file with roost locations, if you want to use home ranges instead of a defined 
 # area from the roost see below
-slocsb <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Roosts2023.csv', stringsAsFactors = FALSE)
+slocsb <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Roosts2023.csv', stringsAsFactors = FALSE)
 colnames(slocsb) <- c("site", "x", "y")
 sf_bird <- st_as_sf(slocsb, coords = c("y", "x"), crs = 4326)
 sf_bird <- st_transform(sf_bird, st_crs(Buildings))
