@@ -1,0 +1,46 @@
+﻿Roost,LEVEL,COMPLETE DATA,1st APPROACH date,1st APPROACH time,1st APPROACH latency,END POINT 1st approach,END POINT 1st approach time,FATE 1st approach,SOLVING date,SOLVING time,SOLVING latency 1,SOLVING latency 2,END POINT solving,FATE solving,SOLVED,SOLVED SCC,INSTALLATION DATE END,INSTALLATION TIME END,COMMENTS
+ANU,1,1,NA,NA,NA,20230712,NA,Took box down,20230701,02:10:06,NA,NA,20230701,Solved others,1,0,20230629,14:05,Solved by gliders
+ANU,2,1,20230711,06:28:53,To compute,20230712,NA,Took box down,20230705,06:43:22,NA,NA,20230705,Solved others,1,0,20230629,14:05,Solved by gliders
+ANU,3,1,NA,NA,NA,20230712,NA,Took box down,20230701,02:45:54,NA,NA,20230701,Solved others,1,0,20230629,14:05,Solved by gliders
+Cook,1,0,NA,NA,NA,20230626,11:04:00,Camera failure,NA,NA,NA,NA,20230707,Camera failure,1,NA,20230624,10:30,Solving not recorded
+Cook,2,1,20230708,07:19:25,To compute,20230725,NA,Took box down,20230707,15:02:00,NA,NA,20230707,Solved others,1,0,20230624,10:30,Solved by crimson rosella after the monitoring
+Cook,3,0,NA,NA,NA,20230624,11:05:00,Camera failure,NA,NA,NA,NA,20230624,Camera failure,1,NA,20230624,10:30,"No data from 24/6 to 7/7/23, solving not recorded"
+Corroboree Park,1,1,20230701,18:03:41,90812,20230711,NA,Took box down,20230704,17:15:16,256184,346996,20230704,Took box down,1,1,20230715,16:50,
+Corroboree Park,2,0,NA,NA,NA,20230715,16:51:00,Camera failure,NA,NA,NA,NA,20230801,Camera failure,1,0,20230715,16:50,NO date and time from 30/6 to 14/7/23
+Corroboree Park,3,0,NA,NA,NA,20230715,16:51:00,Camera failure,NA,NA,NA,NA,20230801,Camera failure,1,0,20230715,16:50,NO date and time from 30/6 to 14/7/23
+Garis Place,1,1,20230624,18:06:32,701773,20230811,NA,Took box down,NA,NA,NA,NA,20230811,Took box down,0,0,20230616,15:10,Unsolved
+Garis Place,2,1,NA,NA,NA,20230811,NA,Never approached,NA,NA,NA,NA,20230811,Took box down,0,0,20230616,15:10,Unsolved
+Garis Place,3,1,20230617,13:53:19,81717,20230811,NA,Took box down,NA,NA,NA,NA,20230811,Took box down,0,0,20230616,15:10,Unsolved
+Gungahlin,1,0,20230615,18:07:00,93738,20230614,NA,Camera failure,NA,NA,NA,NA,20230614,Camera failure,1,NA,20230614,16:00,"Tape in front of sensor, solving not recorded. CHECK endpoint"
+Gungahlin,2,0,20230615,17:51:55,93068,20230720,NA,Camera failure,NA,NA,NA,NA,20230720,Camera failure,1,NA,20230614,16:00,"Wrong batteries or SD card, solving not recorded"
+Gungahlin,3,1,20230615,17:32:47,91944,20230714,NA,Took box down,20230709,17:12:04,2072380,2164324,20230709,Took box down,1,1,20230614,16:00,
+Hackett,1,1,20230720,11:06:40,170366,20230802,NA,Took box down,20230720,11:16:03,697,171063,20230720,Took box down,1,1,20230718,11:45,
+Hackett,2,0,NA,NA,NA,20230810,08:28:00,Never approached,NA,NA,NA,NA,20230810,Camera failure,1,NA,20230718,11:45,"Wrong batteries or SD card, solving and 1st approach not recorded"
+Hackett,3,1,20230824,14:41:05,3207311,20230911,NA,Took box down,NA,NA,NA,NA,20230911,Took box down,0,0,20230718,11:45,Unsolved
+Higgins,1,1,20230705,08:18:04,1277782,20230707,NA,Took box down,20230705,08:16:51,29,1277811,20230705,Took box down,1,1,20230620,13:20,
+Higgins,2,1,NA,NA,NA,20230707,NA,Took box down,20230620,19:54:30,NA,NA,20230620,Solved others,1,0,20230620,13:20,Solved by possum
+Higgins,3,0,NA,NA,NA,20230620,13:21:00,Camera failure,NA,NA,NA,NA,20230625,Camera failure,1,NA,20230620,13:20,"Camera failure, solving not recorded"
+Lake Ginninderra,1,1,20230629,18:17:35,To compute,20230706,NA,Took box down,20230628,22:56:23,NA,NA,20230628,Solved others,1,0,20230620,10:40,Solved by possum
+Lake Ginninderra,2,0,NA,NA,NA,NA,10:41:00,Camera failure,NA,NA,NA,NA,NA,Camera failure,1,NA,20230620,10:40,NO data at all: camera failure + found solved
+Lake Ginninderra,3,1,NA,NA,NA,20230811,12:08:00,Never approached,NA,NA,NA,NA,20230811,Took box down,0,0,20230620,10:40,Unsolved
+Lyneam,1,1,20230627,12:41:34,253836,20230630,NA,Took box down,20230627,12:30:58,22,253858,20230627,Solved others,1,1,20230624,14:00,"Solved same day of the checking (before), coincidence"
+Lyneam,2,1,20230703,12:26:16,771950,20230712,NA,Took box down,20230712,11:19:33,773623,1545573,20230712,Took box down,1,1,20230624,14:00,
+Lyneam,3,1,20230630,10:30:44,505794,20230712,NA,Took box down,20230712,12:53:55,1045441,1551235,20230712,Took box down,1,1,20230624,14:00,
+Narrabundah,1,1,20230829,18:51:18,19823,20230911,NA,Took box down,20230909,18:26:09,948946,968769,20230909,Took box down,1,1,20230829,15:30,
+Narrabundah,2,1,20230902,18:44:09,364866,20231024,NA,Took box down,NA,NA,NA,NA,20231024,Took box down,0,0,20230829,15:30,Unsolved
+Narrabundah,3,1,20230906,18:47:39,710435,20230911,NA,Took box down,20230908,19:15:17,174882,885317,20230908,Took box down,1,1,20230829,15:30,
+O'Connor,1,0,NA,NA,NA,20230624,17:01:00,Camera failure,NA,NA,NA,NA,NA,Camera failure,1,NA,20230624,17:00,NO data at all: camera failure + found solved
+O'Connor,2,1,20230729,06:15:54,2985353,20230819,NA,Took box down,NA,NA,NA,NA,20230819,Took box down,0,0,20230624,17:00,Unsolved
+O'Connor,3,0,20230731,11:50:06,To compute,20230802,NA,Took box down,20230726,02:10:30,NA,NA,20230726,Solved others,1,0,20230624,17:00,Solved by possum
+Telopea Park,1,1,NA,NA,NA,20230823,12:56:00,Never approached,20230817,10:57:48,NA,NA,20230817,Solved others,1,0,20230816,11:50,Solved by magpie
+Telopea Park,2,1,20230817,13:29:49,92325,20230905,NA,Took box down,20230902,11:24:51,1374966,1467291,20230902,Took box down,1,1,20230816,11:50,
+Telopea Park,3,1,20230820,11:07:05,To compute,20230823,NA,Took box down,20230817,03:14:25,NA,NA,20230817,Solved others,1,0,20230816,11:50,Solved by possum
+War Memorial,1,1,20230803,10:55:00,To compute,20230809,NA,Took box down,20230713,08:41:01,NA,NA,20230713,Solved others,1,0,20230703,13:15,Solved by currawong
+War Memorial,2,1,20230724,13:58:42,1816983,20230911,NA,Took box down,NA,NA,NA,NA,20230911,Took box down,0,0,20230703,13:15,Unsolved
+War Memorial,3,0,NA,NA,NA,20230703,13:16:00,Camera failure,NA,NA,NA,NA,20230703,Camera failure,1,NA,20230703,13:15,NO data at all: camera failure + found solved
+Watson,1,1,20230728,18:30:50,880837,20230809,NA,Took box down,20230806,NA,777906,1658743,20230806,Took box down,1,1,20230718,13:50,
+Watson,2,1,20230819,12:14:40,2758857,20230911,NA,Took box down,20230819,12:31:51,1314,2760171,20230819,Took box down,1,1,20230718,13:50,
+Watson,3,1,20230902,18:57:44,3992840,20230906,NA,Took box down,NA,NA,NA,NA,20230906,Took box down,0,0,20230718,13:50,Unsolved
+Yarralulma,1,1,20230830,10:27:36,513408,20230905,NA,Took box down,20230830,NA,1711,515119,20230830,Took box down,1,1,20230824,11:50,
+Yarralulma,2,1,20230825,16:10:38,456755,20231019,NA,Took box down,NA,NA,NA,NA,20231019,Took box down,0,0,20230824,11:50,Unsolved
+Yarralulma,3,1,20230829,18:44:04,101995,20230905,NA,Took box down,20230901,11:25:41,587746,689741,20230901,Took box down,1,1,20230824,11:50,

@@ -53,7 +53,7 @@ ANU,287,-35.277878,149.114032,3,9.5,Center,North,20230629,16:50,10,05:56:53,06:0
 ANU,287,-35.277878,149.114032,3,9.5,Center,North,20230629,16:50,11,06:04:30,06:11:25,20230702,Post attempt,NA,Petaurus spp.,,ANU/Level3/00232 to 236,
 ANU,287,-35.277878,149.114032,3,9.5,Center,North,20230629,16:50,12,06:11:41,06:12:44,20230702,Post attempt,NA,Petaurus spp.,,ANU/Level3/00236,
 Cook,,-35.266798,149.069337,2,7.6,Center,Belconnen,20230624,10:30,1,NA,NA,NA,Attempt,NA,Manorina chiassosa,,Cook/Level2/100BMCIM/IMG0013,"Arrives 2.18 m video, leaves at 2.28 (length IMG00XX videos 3 minutes)"
-Cook,,-35.266798,149.069337,2,7.6,Center,Belconnen,20230624,10:30,1,15:01:36,16:24:30,20230707,Solving,03:02:00,Platycercus elegans,,Cook/Level2/250723/001 to 30,"Not continuesly, but it was part of the same attempt"
+Cook,,-35.266798,149.069337,2,7.6,Center,Belconnen,20230624,10:30,1,15:01:36,16:24:30,20230707,Solving,15:02:00,Platycercus elegans,,Cook/Level2/250723/001 to 30,"Not continuesly, but it was part of the same attempt"
 Cook,,-35.266798,149.069337,2,7.6,Center,Belconnen,20230624,10:30,2,07:11:56,07:13:13,20230707,Post attempt,NA,Platycercus elegans,,Cook/Level2/250723/00108 to 109,
 Cook,,-35.266798,149.069337,2,7.6,Center,Belconnen,20230624,10:30,3,07:12:59,07:13:45,20230707,Post attempt,NA,Platycercus elegans,,Cook/Level2/250723/00109 ,
 Cook,,-35.266798,149.069337,2,7.6,Center,Belconnen,20230624,10:30,1,07:15:02,07:19:25,20230708,Post attempt,NA,Cacatua galerita,,Cook/Level2/250723/00110 to 112,
@@ -268,22 +268,22 @@ Hackett,132,-35.251075,149.162724,3,10.1,Right,North,20230718,11:45,7,18:18:35,1
 Hackett,132,-35.251075,149.162724,3,10.1,Right,North,20230718,11:45,3,05:31:38,05:31:59,20230829,Attempt,NA,Trichosurus vulpecula,,Hackett/Level3/060923/0030,
 Hackett,132,-35.251075,149.162724,3,10.1,Right,North,20230718,11:45,6,16:18:00,16:18:28,20230829,Attempt,NA,Platycercus elegans,,Hackett/Level3/060923/0034,
 Hackett,132,-35.251075,149.162724,3,10.1,Right,North,20230718,11:45,7,06:27:12,06:27:15,20230911,Presence,NA,Manorina chiassosa,,Hackett/Level3/110923/0076,
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,2,12:30:36,12:41:34,20230627,Solving,12:30:58,Cacatua galerita,,Lyneam/Level1/Solved_copy2 to f1138944,
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,3,12:32:56,12:35:26,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1056512,Not marked but red dots under the right wing close to the tail
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,4,12:41:47,12:41:59,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1138944,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,5,12:42:59,12:44:18,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1164032,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,6,12:44:27,12:45:55,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1184768,
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,7,12:47:01,12:49:00,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1206784,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,8,12:48:56,12:56:55,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1229568,
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,9,12:56:59,13:03:10,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1229568,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,10,13:07:45,13:11:07,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1379584,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,11,13:09:38,13:11:07,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1379584,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,12,13:18:41,13:23:18,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1443584,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,13,13:27:33,13:31:19,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1465600 to f1487360,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,14,13:34:01,13:40:26,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1508608,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,15,15:21:16,15:25:03,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1592832,"Not marked but red dots under the right wing close to the tail, same bird as before"
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,16,17:53:12,17:57:32,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1635840 to f1679872,
-Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,17,13:47:49,13:49:16,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1740544,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,1,12:30:36,12:41:34,20230627,Solving,12:30:58,Cacatua galerita,,Lyneam/Level1/Solved_copy2 to f1138944,
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,2,12:32:56,12:35:26,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1056512,Not marked but red dots under the right wing close to the tail
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,3,12:41:47,12:41:59,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1138944,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,4,12:42:59,12:44:18,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1164032,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,5,12:44:27,12:45:55,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1184768,
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,6,12:47:01,12:49:00,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1206784,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,7,12:48:56,12:56:55,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1229568,
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,8,12:56:59,13:03:10,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1229568,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,9,13:07:45,13:11:07,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1379584,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,10,13:09:38,13:11:07,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1379584,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,11,13:18:41,13:23:18,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1443584,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,12,13:27:33,13:31:19,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1465600 to f1487360,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,13,13:34:01,13:40:26,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1508608,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,14,15:21:16,15:25:03,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1592832,"Not marked but red dots under the right wing close to the tail, same bird as before"
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,15,17:53:12,17:57:32,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1635840 to f1679872,
+Lyneam,41,-35.25562,149.128381,1,13,Right,North,20230624,14:00,16,13:47:49,13:49:16,20230627,Post attempt,NA,Cacatua galerita,,Lyneam/Level1/f1740544,"Not marked but red dots under the right wing close to the tail, same bird as before"
 Lyneam,41,-35.254317,149.127706,2,9.5,Left,North,20230624,14:00,1,13:55:01,13:55:33,20230627,Attempt,NA,Manorina chiassosa,,Lyneam/Level2/009,
 Lyneam,41,-35.254317,149.127706,2,9.5,Left,North,20230624,14:00,2,10:22:04,10:22:20,20230701,Attempt,NA,Manorina chiassosa,,Lyneam/Level2/100723/0010,
 Lyneam,41,-35.254317,149.127706,2,9.5,Left,North,20230624,14:00,3,12:07:33,12:07:38,20230701,Presence,NA,Manorina chiassosa,,Lyneam/Level2/100723/0011,

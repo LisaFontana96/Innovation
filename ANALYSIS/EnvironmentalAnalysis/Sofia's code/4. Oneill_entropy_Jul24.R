@@ -21,28 +21,28 @@ library(ggplot2)
 Proj <- st_crs(4326)
 
 # Load data
-landcover <- raster('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/Layers/Merged_land_roads_build_Jul24.tif')
+landcover <- raster('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/Layers/Merged_land_roads_build_Jul24.tif')
 # landcover<- raster('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/QGIS/ga_ls_landcover_class_cyear_2_1-0-0_au_x15y-40_2020-01-01_level3_rgb.tif')
 
 ###############################################################################
 ###############################################################################
 # Oneill entropy with area for each roost
 
-ANU <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/ANU.csv')
-CK <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Cook.csv')
-CP <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Corroboree.csv')
-GPM <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/GarisPlace.csv')
-GU <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Gungahlin.csv')
-HA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Hackett.csv')
-HIG <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Higgins.csv')
-LG <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/LakeGinninderra.csv')
-LY <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Lyneam.csv')
-OC <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/OConnor.csv')
-TP <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Telopea.csv')
-WA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Watson.csv')
-WM <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/WarMemorial.csv')
-YA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Yarralulma.csv')
-NAR <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Narrabundah.csv')
+ANU <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/ANU.csv')
+CK <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Cook.csv')
+CP <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Corroboree.csv')
+GPM <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/GarisPlace.csv')
+GU <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Gungahlin.csv')
+HA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Hackett.csv')
+HIG <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Higgins.csv')
+LG <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/LakeGinninderra.csv')
+LY <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Lyneam.csv')
+OC <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/OConnor.csv')
+TP <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Telopea.csv')
+WA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Watson.csv')
+WM <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/WarMemorial.csv')
+YA <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Yarralulma.csv')
+NAR <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/Narrabundah.csv')
 
 ### ANU ###
 # Check if S2 is empty
@@ -841,8 +841,9 @@ oneill (NAR_landcover_matrix)
 
 #Create and save single .csv for ONeill
 Site<- c('ANU', 'CK', 'CP', 'GPM', 'GU', 'HA', 'HIG', 'LG', 'LY', 'NAR', 'OC', 'TP', 'WA', 'WM', 'YA')
+ONeill_relative <- c(0.573606, 0.4811473, 0.6713038, 0.5521599, 0.6246905, 0.5196738, 0.6177957, 0.6520349, 0.674288, 0.5551433, 0.5554409, 0.6831593, 0.5684909, 0.6177246, 0.6427883)
 ONeill<- c(2.38556, 1.872539, 2.612594, 2.296363, 2.431183, 2.022477, 2.56934, 2.711737, 2.804285, 2.439549, 2.310014, 2.84118, 2.364287, 2.569044, 2.501617)
-ONeill<- data.frame(Site, ONeill)
+ONeill<- data.frame(Site, ONeill, ONeill_relative)
 
 # Create a bar plot for Urbanization Index
 ggplot(ONeill, aes(x = Site, y = ONeill)) +
@@ -901,5 +902,5 @@ ggplot(ONeill, aes(x = Site, y = ONeill)) +
 #        y = "O'Neill Value / Range") +
 #   theme_minimal()
 
-
+write.csv(ONeill, '/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/DATA/EnvironmentalAnalysis/CSVs/ONeill.csv')
 
