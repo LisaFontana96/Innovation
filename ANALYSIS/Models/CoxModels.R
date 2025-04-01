@@ -1,11 +1,14 @@
 rm(list = ls())
 cat("\014")
+graphics.off()
+options(scipen = 999)
 library(brms)
 library(splines2)
 library(survminer)
 library(survival)
 library(dplyr)
 library(tidybayes)
+library(tidyr)
 library(ggplot2)
 library(summarytools)
 library(lubridate)
@@ -75,18 +78,6 @@ final_dataset <- summary %>%
     WTDegree = as.numeric(WTDegree),
     Roost.size = as.numeric(Roost.size))
 
-## Frequentist approach ##
-
-#Latency first approach
-cox_1stapproach <- coxph(Surv(X1st.APPROACH.latency, SOLVED.SCC) ~ Position + scale(Roost.size) + scale(UI) + scale(O.Neill), data = final_dataset)
-cox_1stapproach2 <- coxph(Surv(X1st.APPROACH.latency, APPROACHED.SCC) ~ Position + scale(Roost.size) + scale(UI) + scale(O.Neill), data = final_dataset)
-#With frequentist method, the model converges only if there is no random effect
-
-#Latency solving
-cox_solving <- coxph(Surv(SOLVING.latency.1, SOLVED.SCC) ~ Position + scale(Roost.size) + scale(UI) + scale(O.Neill), data = final_dataset)
-cox_solving2 <- coxph(Surv(SOLVING.latency.2, SOLVED.SCC) ~ Position + scale(Roost.size) + scale(UI) + scale(O.Neill), data = final_dataset)
-#With frequentist method, the model converges only if there is no random effect
-
 ## Baeysian approach ##
 
 #PRIORS
@@ -103,23 +94,124 @@ priors <- c(
 #relevel(ref="1")
 
 # 1st approach and approached 1/0
-cox_1stapproach_bayes <- brm(
-  bf(X1st.APPROACH.latency | cens(1 - APPROACHED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
-  data = final_dataset, 
-  family = brmsfamily("cox"),
-  prior= priors,
-  chains = 4, iter = 20000, warmup = 5000, cores = 5,
-  control = list(adapt_delta = 0.9999))
+refit <- FALSE
+if(refit){
+  # Make the model
+  cox_1stapproach_bayes <- brm(
+    bf(X1st.APPROACH.latency | cens(1 - APPROACHED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
+    data = final_dataset, 
+    family = brmsfamily("cox"),
+    prior= priors,
+    chains = 4, iter = 20000, warmup = 5000, cores = 5,
+    control = list(adapt_delta = 0.9999))
+  # Save the model
+  saveRDS(cox_1stapproach_bayes, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_1stapproach_bayes.rds")
+} else {
+  cox_1stapproach_bayes<- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_1stapproach_bayes.rds")
+} #if refit <- FALSE, it reads the model, it TRUE, it builds and saves the model
 summary(cox_1stapproach_bayes)
 
 # Solving 
-cox_solving_bayes <- brm(
-  bf(SOLVING.latency.1 | cens(1 - SOLVED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
-  data = final_dataset, 
-  family = brmsfamily("cox"),
-  prior= priors,
-  chains = 4, iter = 20000, warmup = 5000, cores = 5,
-  control = list(adapt_delta = 0.9999))
+if(refit){
+  # Make the model
+  cox_solving_bayes <- brm(
+    bf(SOLVING.latency.1 | cens(1 - SOLVED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
+    data = final_dataset, 
+    family = brmsfamily("cox"),
+    prior= priors,
+    chains = 4, iter = 20000, warmup = 5000, cores = 5,
+    control = list(adapt_delta = 0.9999))
+  # Save the model
+  saveRDS(cox_solving_bayes, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_solving_bayes.rds")
+} else {
+  cox_solving_bayes<- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_solving_bayes.rds")
+} #if refit <- FALSE, it reads the model, it TRUE, it builds and saves the model
 summary(cox_solving_bayes)
 
-## PLOTS ##
+## PLOTS 1st approach ##
+new_roost_data <- final_dataset %>%
+  group_by(Roost) %>%
+  summarise(
+    LEVEL = "1",
+    Position = "C",
+    Roost.size = mean(Roost.size, na.rm = TRUE),
+    Degree = mean(Degree, na.rm = TRUE),
+    UI = mean(UI, na.rm = TRUE),
+    O.Neill = mean(O.Neill, na.rm = TRUE),
+    .groups = "drop"
+  )
+
+# Standardize predictors
+new_roost_data <- new_roost_data %>%
+  mutate(
+    Roost.size = scale(Roost.size)[,1],
+    UI = scale(UI)[,1],
+    O.Neill = scale(O.Neill)[,1],
+    X1st.APPROACH.latency = 1000  
+  )
+
+
+# Posterior linear predictor
+lp_draws <- add_linpred_draws(
+  cox_1stapproach_bayes,
+  newdata = new_roost_data,
+  re_formula = NULL,
+  ndraws = 500,
+  value = "eta"  
+)
+
+
+# Baseline survival estimate from frequentist Cox model
+baseline_cox <- coxph(Surv(X1st.APPROACH.latency, APPROACHED.SCC) ~ 1, data = final_dataset)
+baseline_fit <- survfit(baseline_cox)
+baseline_surv <- data.frame(
+  time = baseline_fit$time,
+  S0 = baseline_fit$surv
+)
+
+surv_preds <- expand_grid(baseline_surv, lp_draws) %>%
+  mutate(
+    surv = S0 ^ exp(eta),
+    Roost = new_roost_data$Roost[.row]
+  )
+
+# Summarise across posterior draws
+plot_roost_surv <- surv_preds %>%
+  group_by(time, Roost) %>%
+  summarise(
+    surv_prob = median(surv),
+    .lower = quantile(surv, 0.025),
+    .upper = quantile(surv, 0.975),
+    .groups = "drop"
+  )
+
+# Plots
+
+ggplot(plot_roost_surv, aes(x = time, y = surv_prob)) +                        
+  geom_line(aes(color = Roost)) +                                    # Draw median survival curves, one per roost
+  geom_ribbon(aes(ymin = .lower, ymax = .upper, fill = Roost),       # Add shaded 95% credible intervals per roost
+              alpha = 0.2, color = NA) +                                      
+  facet_wrap(~ Roost, scales = "free_y") +                                     
+  labs(                                                                        
+    title = "Survival Curves by Roost (First Approach)",
+    x = "Time since installation (minutes)",
+    y = "Probability not yet approached"
+  ) +
+  theme_minimal() +                                                            
+  theme(legend.position = "none")                                              
+
+# -----------------------------------------------------------------------------
+
+plot_roost_surv_zoom <- plot_roost_surv %>%
+  filter(time <= 3000)                                               # Filter data to only include first 3000 minutes
+
+ggplot(plot_roost_surv_zoom, aes(x = time, y = surv_prob)) +                  # Same plot setup as above, now using zoomed data
+  geom_line(aes(color = Roost)) +                                            
+  facet_wrap(~ Roost, scales = "free_y") +                                   
+  labs(
+    title = "Survival Curves by Roost (First Approach)",                       
+    x = "Time since installation (minutes)",
+    y = "Probability not yet approached"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")                 
