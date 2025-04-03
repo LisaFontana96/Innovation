@@ -98,7 +98,7 @@ refit <- FALSE
 if(refit){
   # Make the model
   cox_1stapproach_bayes <- brm(
-    bf(X1st.APPROACH.latency | cens(1 - APPROACHED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
+    bf(X1st.APPROACH.latency | cens(1 - APPROACHED.SCC) ~ LEVEL + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
     data = final_dataset, 
     family = brmsfamily("cox"),
     prior= priors,
@@ -111,11 +111,20 @@ if(refit){
 } #if refit <- FALSE, it reads the model, it TRUE, it builds and saves the model
 summary(cox_1stapproach_bayes)
 
+#With position
+# cox_1stapproach_bayes_position <- brm(
+#   bf(X1st.APPROACH.latency | cens(1 - APPROACHED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)),
+#   data = final_dataset,
+#   family = brmsfamily("cox"),
+#   prior= priors,
+#   chains = 4, iter = 20000, warmup = 5000, cores = 8,
+#   control = list(adapt_delta = 0.9999))
+
 # Solving 
 if(refit){
   # Make the model
   cox_solving_bayes <- brm(
-    bf(SOLVING.latency.1 | cens(1 - SOLVED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
+    bf(SOLVING.latency.1 | cens(1 - SOLVED.SCC) ~ LEVEL + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
     data = final_dataset, 
     family = brmsfamily("cox"),
     prior= priors,
@@ -128,90 +137,103 @@ if(refit){
 } #if refit <- FALSE, it reads the model, it TRUE, it builds and saves the model
 summary(cox_solving_bayes)
 
+#With position
+# cox_solving_bayes_position <- brm(
+#   bf(SOLVING.latency.1 | cens(1 - SOLVED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)),
+#   data = final_dataset,
+#   family = brmsfamily("cox"),
+#   prior= priors,
+#   chains = 4, iter = 20000, warmup = 5000, cores = 5,
+#   control = list(adapt_delta = 0.9999))
+
+#### PLOTS ####
+
 ## PLOTS 1st approach ##
-new_roost_data <- final_dataset %>%
-  group_by(Roost) %>%
-  summarise(
-    LEVEL = "1",
-    Position = "C",
-    Roost.size = mean(Roost.size, na.rm = TRUE),
-    Degree = mean(Degree, na.rm = TRUE),
-    UI = mean(UI, na.rm = TRUE),
-    O.Neill = mean(O.Neill, na.rm = TRUE),
-    .groups = "drop"
-  )
-
-# Standardize predictors
-new_roost_data <- new_roost_data %>%
+# Load posterior draws from the Bayesian Cox model
+posterior_long_approach <- cox_1stapproach_bayes %>%
+  spread_draws(b_LEVEL2, b_LEVEL3, b_scaleRoost.size, b_Degree, b_scaleUI, b_scaleO.Neill) %>%
+  select(-.chain, -.iteration, -.draw) %>%
+  pivot_longer(cols = everything(), names_to = "predictor", values_to = "log_hr") %>%
   mutate(
-    Roost.size = scale(Roost.size)[,1],
-    UI = scale(UI)[,1],
-    O.Neill = scale(O.Neill)[,1],
-    X1st.APPROACH.latency = 1000  
+    hazard_ratio = exp(log_hr),
+    predictor = gsub("b_", "", predictor)
   )
 
-
-# Posterior linear predictor
-lp_draws <- add_linpred_draws(
-  cox_1stapproach_bayes,
-  newdata = new_roost_data,
-  re_formula = NULL,
-  ndraws = 500,
-  value = "eta"  
-)
-
-
-# Baseline survival estimate from frequentist Cox model
-baseline_cox <- coxph(Surv(X1st.APPROACH.latency, APPROACHED.SCC) ~ 1, data = final_dataset)
-baseline_fit <- survfit(baseline_cox)
-baseline_surv <- data.frame(
-  time = baseline_fit$time,
-  S0 = baseline_fit$surv
-)
-
-surv_preds <- expand_grid(baseline_surv, lp_draws) %>%
-  mutate(
-    surv = S0 ^ exp(eta),
-    Roost = new_roost_data$Roost[.row]
-  )
-
-# Summarise across posterior draws
-plot_roost_surv <- surv_preds %>%
-  group_by(time, Roost) %>%
-  summarise(
-    surv_prob = median(surv),
-    .lower = quantile(surv, 0.025),
-    .upper = quantile(surv, 0.975),
-    .groups = "drop"
-  )
-
-# Plots
-
-ggplot(plot_roost_surv, aes(x = time, y = surv_prob)) +                        
-  geom_line(aes(color = Roost)) +                                    # Draw median survival curves, one per roost
-  geom_ribbon(aes(ymin = .lower, ymax = .upper, fill = Roost),       # Add shaded 95% credible intervals per roost
-              alpha = 0.2, color = NA) +                                      
-  facet_wrap(~ Roost, scales = "free_y") +                                     
-  labs(                                                                        
-    title = "Survival Curves by Roost (First Approach)",
-    x = "Time since installation (minutes)",
-    y = "Probability not yet approached"
-  ) +
-  theme_minimal() +                                                            
-  theme(legend.position = "none")                                              
-
-# -----------------------------------------------------------------------------
-
-plot_roost_surv_zoom <- plot_roost_surv %>%
-  filter(time <= 3000)                                               # Filter data to only include first 3000 minutes
-
-ggplot(plot_roost_surv_zoom, aes(x = time, y = surv_prob)) +                  # Same plot setup as above, now using zoomed data
-  geom_line(aes(color = Roost)) +                                            
-  facet_wrap(~ Roost, scales = "free_y") +                                   
+#Plot 1
+ggplot(posterior_long_approach, aes(x = log_hr, y = reorder(predictor, log_hr))) +
+  stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
   labs(
-    title = "Survival Curves by Roost (First Approach)",                       
-    x = "Time since installation (minutes)",
-    y = "Probability not yet approached"
+    x = "Posterior estimate (log hazard)",
+    y = NULL,
+    title = "Posterior Distributions (Bayesian Cox model – First Approach)"
   ) +
-  theme_minimal() +
-  theme(legend.position = "none")                 
+  theme_minimal(base_size = 14)
+
+#Plot 2
+ggplot(posterior_long_approach, aes(x = hazard_ratio, y = reorder(predictor, hazard_ratio))) +
+  stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray40") +
+  scale_x_log10() +
+  scale_y_discrete(labels = c(
+    "LEVEL2" = "Level 2 vs 1",
+    "LEVEL3" = "Level 3 vs 1",
+    "scaleRoost.size" = "Roost Size (scaled)",
+    "Degree" = "Connectivity (Degree)",
+    "scaleUI" = "Urbanisation (scaled)",
+    "scaleO.Neill" = "Entropy (scaled)"
+  )) +
+  labs(
+    x = "Hazard Ratio (log scale)",
+    y = NULL,
+    title = "Posterior Hazard Ratios (model first approach)"
+  ) +
+  theme_minimal(base_size = 14)
+
+## PLOTS Solving ##
+# Load posterior draws from the Bayesian Cox model
+posterior_draws <- cox_solving_bayes %>%
+  spread_draws(b_LEVEL2, b_LEVEL3, 
+               b_scaleRoost.size, b_Degree, b_scaleUI, b_scaleO.Neill)
+
+# Reshape to long format and compute hazard ratios
+posterior_long <- cox_solving_bayes %>%
+  spread_draws(b_LEVEL2, b_LEVEL3, 
+               b_scaleRoost.size, b_Degree, b_scaleUI, b_scaleO.Neill) %>%
+  select(-.chain, -.iteration, -.draw) %>%  
+  pivot_longer(cols = everything(), names_to = "predictor", values_to = "log_hr") %>%
+  mutate(
+    hazard_ratio = exp(log_hr),
+    predictor = gsub("b_", "", predictor)  
+  )
+
+# Plot 1: Posterior log-hazard estimates
+ggplot(posterior_long, aes(x = log_hr, y = reorder(predictor, log_hr))) +
+  stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
+  labs(
+    x = "Posterior estimate (log hazard)",
+    y = NULL,
+    title = "Posterior distributions"
+  ) +
+  theme_minimal(base_size = 14)
+
+# Plot 2: Posterior hazard ratios (log-scaled x-axis)
+ggplot(posterior_long, aes(x = hazard_ratio, y = reorder(predictor, hazard_ratio))) +
+  stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray40") +
+  scale_x_log10() +
+  scale_y_discrete(labels = c(
+    "LEVEL2" = "Level 2 vs 1",
+    "LEVEL3" = "Level 3 vs 1",
+    "scaleRoost.size" = "Roost Size (scaled)",
+    "Degree" = "Connectivity (Degree)",
+    "scaleUI" = "Urbanisation (scaled)",
+    "scaleO.Neill" = "Entropy (scaled)"
+  )) +
+  labs(
+    x = "Hazard Ratio (log scale)",
+    y = NULL,
+    title = "Posterior Hazard Ratios (solving model)"
+  ) +
+  theme_minimal(base_size = 14)

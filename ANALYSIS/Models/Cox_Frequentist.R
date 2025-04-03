@@ -181,10 +181,7 @@ ggsurvplot(fit_approach_grouped, data = final_dataset,
 #            palette = "Set1")
 
 #Centrality
-final_dataset$Degree_cat <- ifelse(final_dataset$Degree > median(final_dataset$Degree, na.rm = TRUE),
-                                   "High centrality", "Low centrality")
-fit_degree <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ Degree_cat
-                      +cluster(Roost),
+fit_degree <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ Degree + cluster(Roost),
                       data = final_dataset)
 ggsurvplot(fit_degree, data = final_dataset,
            conf.int = TRUE,
@@ -192,7 +189,7 @@ ggsurvplot(fit_degree, data = final_dataset,
            legend.title = "Roost centrality",
            xlab = "Time until first approach (min)",
            ylab = "Survival probability (not yet approached)",
-           palette = "Paired")
+           palette = "Oranges")
 
 #Entropy
 final_dataset$Entropy_cat <- ifelse(final_dataset$O.Neill > median(final_dataset$O.Neill, na.rm = TRUE),
@@ -207,7 +204,7 @@ ggsurvplot(fit_entropy, data = final_dataset,
            legend.labs = c("High entropy", "Low entropy"),
            xlab = "Time until first approach (min)",
            ylab = "Survival probability (not yet approached)",
-           palette = "Accent")
+           palette = "BrBg")
 
 #Roost size
 final_dataset$Roost_size_cat <- ifelse(final_dataset$Roost.size > median(final_dataset$Roost.size, na.rm = TRUE),
@@ -241,13 +238,17 @@ ggsurvplot(fit_UI, data = final_dataset,
 fit_roost <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ Roost,
                      data = final_dataset)
 my_colours <- hue_pal()(15)
+Roost_code<- c('ANU', 'CK', 'CP', 'GP', 'GU', 'HA', 'HIG', 'LG', 'LY', 'NAR', 'OC', 'TP', 'WA', 'WM', 'YA')
 ggsurvplot(fit_roost, data = final_dataset,
-           conf.int = FALSE,
-           pval = FALSE,
-           legend.title = "Roost",
-           xlab = "Time until first approach (min)",
-           ylab = "Survival probability (not yet approached)",
-           palette = my_colours) 
+            conf.int = FALSE,
+            pval = FALSE,
+            legend.title = "Roost",
+            ylab = 'Survival probability (not yet approached)',
+            xlab = 'Time until first approach (min)',
+            legend.labs = Roost_code,
+            palette = my_colours,
+            legend = "right", 
+            legend.position = c(1, 0.5))
 
 ## Solving ##
 #Level
@@ -297,9 +298,9 @@ ggsurvplot(fit_entropy, data = final_dataset,
            pval = FALSE,
            legend.title = "Environmental entropy",
            legend.labs = c("High entropy", "Low entropy"),
-           xlab = "Time until first approach (min)",
-           ylab = "Survival probability (not yet approached)",
-           palette = "Accent")
+           xlab = "Time until solving (min)",
+           ylab = "Survival probability (not yet solved)",
+           palette = "BrBg")
 
 #Roost (random)
 fit_roost <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Roost,
@@ -308,33 +309,36 @@ ggsurvplot(fit_roost, data = final_dataset,
            conf.int = FALSE,
            pval = FALSE,
            legend.title = "Roost",
-           xlab = "Time until solving (min)",
-           ylab = "Survival probability (not yet solved)",
-           palette = my_colours) 
+           ylab = 'Survival probability (not yet solved)',
+           xlab = 'Time until solving (min)',
+           legend.labs = Roost_code,
+           palette = my_colours,
+           legend = "right", 
+           legend.position = c(1, 0.5))
 
 #Position
-  fit_position <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Position
-                        +cluster(Roost),
-                        data = final_dataset)
-ggsurvplot(fit_position, data = final_dataset,
-           conf.int = TRUE,
-           pval = FALSE,
-           legend.title = "Task position",
-           xlab = "Time until first approach (min)",
-           ylab = "Survival probability (not yet approached)",
-           palette = "Set1")
+#   fit_position <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Position
+#                         +cluster(Roost),
+#                         data = final_dataset)
+# ggsurvplot(fit_position, data = final_dataset,
+#            conf.int = TRUE,
+#            pval = FALSE,
+#            legend.title = "Task position",
+#            xlab = "Time until first approach (min)",
+#            ylab = "Survival probability (not yet approached)",
+#            palette = "Set1")
 
 #Centrality
-fit_degree <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Degree_cat 
+fit_degree <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Degree +
                       +cluster(Roost),
                       data = final_dataset)
 ggsurvplot(fit_degree, data = final_dataset,
            conf.int = TRUE,
            pval = FALSE,
            legend.title = "Roost centrality",
-           xlab = "Time until first approach (min)",
-           ylab = "Survival probability (not yet approached)",
-           palette = "Paired")
+           xlab = "Time until solving (min)",
+           ylab = "Survival probability (not yet solved)",
+           palette = "Oranges")
 
 #Roost size
 fit_roostsize <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Roost_size_cat 
@@ -344,6 +348,8 @@ ggsurvplot(fit_roostsize, data = final_dataset,
            conf.int = TRUE,
            pval = FALSE,
            legend.title = "Roost size",
-           xlab = "Time until first approach (min)",
-           ylab = "Survival probability (not yet approached)",
+           xlab = "Time until solving (min)",
+           ylab = "Survival probability (not yet solved)",
            palette = "Pastel1")
+
+
