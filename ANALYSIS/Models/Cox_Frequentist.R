@@ -81,7 +81,7 @@ final_dataset <- summary %>%
   )
 
 ### MODELS ###
-refit <- FALSE
+refit <- TRUE
 ## First approach model ##
 if (refit) {
   cox_1stapproach <- coxme(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ 
@@ -150,35 +150,28 @@ fit_approach <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ LEVEL
 ggsurvplot(fit_approach, data = final_dataset,
            conf.int = TRUE,
            pval = FALSE,
-           legend.title = "Task Difficulty",
+           legend.title = "Task difficulty",
            xlab = "Time until first approach (min)",
            ylab = "Survival probability (not yet approached)",
-           palette = "Dark2")
+           palette = "Dark2",
+           ggtheme = theme_classic(base_size = 14),
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
-#Level grouped
-fit_approach_grouped <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ LEVEL_grouped
-                                +cluster(Roost),
-                                data = final_dataset)
-ggsurvplot(fit_approach_grouped, data = final_dataset,
-           conf.int = TRUE,
-           pval = FALSE,
-           legend.title = "Task Difficulty",
-           legend.labs = c("Level 1 (Easy)", "Levels 2 & 3 (Harder)"),
-           xlab = "Time until first approach (min)",
-           ylab = "Survival probability (not yet approached)",
-           palette = "Dark2")
-
-#Position
-# fit_position <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ Position
-#                         +cluster(Roost),
-#                         data = final_dataset)
-# ggsurvplot(fit_position, data = final_dataset,
+# #Level grouped
+# fit_approach_grouped <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ LEVEL_grouped
+#                                 +cluster(Roost),
+#                                 data = final_dataset)
+# ggsurvplot(fit_approach_grouped, data = final_dataset,
 #            conf.int = TRUE,
 #            pval = FALSE,
-#            legend.title = "Task position",
+#            legend.title = "Task difficulty",
+#            legend.labs = c("Level 1 (Easy)", "Levels 2 & 3 (Harder)"),
 #            xlab = "Time until first approach (min)",
 #            ylab = "Survival probability (not yet approached)",
-#            palette = "Set1")
+#            palette = "Dark2")
 
 #Centrality
 fit_degree <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ Degree + cluster(Roost),
@@ -189,7 +182,12 @@ ggsurvplot(fit_degree, data = final_dataset,
            legend.title = "Roost centrality",
            xlab = "Time until first approach (min)",
            ylab = "Survival probability (not yet approached)",
-           palette = "Oranges")
+           palette = "Oranges",
+           ggtheme = theme_classic(base_size = 14),
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #Entropy
 final_dataset$Entropy_cat <- ifelse(final_dataset$O.Neill > median(final_dataset$O.Neill, na.rm = TRUE),
@@ -204,7 +202,12 @@ ggsurvplot(fit_entropy, data = final_dataset,
            legend.labs = c("High entropy", "Low entropy"),
            xlab = "Time until first approach (min)",
            ylab = "Survival probability (not yet approached)",
-           palette = "BrBg")
+           palette = "BrBg",
+           ggtheme = theme_classic(base_size = 14),
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #Roost size
 final_dataset$Roost_size_cat <- ifelse(final_dataset$Roost.size > median(final_dataset$Roost.size, na.rm = TRUE),
@@ -218,7 +221,12 @@ ggsurvplot(fit_roostsize, data = final_dataset,
            legend.title = "Roost size",
            xlab = "Time until first approach (min)",
            ylab = "Survival probability (not yet approached)",
-           palette = "Pastel1")
+           palette = "Pastel1",
+           ggtheme = theme_classic(base_size = 14),
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #UI
 final_dataset$UI_cat <- ifelse(final_dataset$UI > median(final_dataset$UI, na.rm = TRUE),
@@ -232,7 +240,12 @@ ggsurvplot(fit_UI, data = final_dataset,
            legend.title = "Urbanisation",
            xlab = "Time until first approach (min)",
            ylab = 'Survival probability (not yet approached)',
-           palette = "Accent")
+           palette = "Accent",
+           ggtheme = theme_classic(base_size = 14),
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #Roost (random)
 fit_roost <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ Roost,
@@ -240,15 +253,20 @@ fit_roost <- survfit(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ Roost,
 my_colours <- hue_pal()(15)
 Roost_code<- c('ANU', 'CK', 'CP', 'GP', 'GU', 'HA', 'HIG', 'LG', 'LY', 'NAR', 'OC', 'TP', 'WA', 'WM', 'YA')
 ggsurvplot(fit_roost, data = final_dataset,
-            conf.int = FALSE,
-            pval = FALSE,
-            legend.title = "Roost",
-            ylab = 'Survival probability (not yet approached)',
-            xlab = 'Time until first approach (min)',
-            legend.labs = Roost_code,
-            palette = my_colours,
-            legend = "right", 
-            legend.position = c(1, 0.5))
+           conf.int = FALSE,
+           pval = FALSE,
+           legend.title = "Roost",
+           ylab = 'Survival probability (not yet approached)',
+           xlab = 'Time until first approach (min)',
+           legend.labs = Roost_code,
+           palette = my_colours,
+           legend = "right", 
+           legend.position = c(1, 0.5),
+           ggtheme = theme_classic(base_size = 14),  
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 ## Solving ##
 #Level
@@ -259,23 +277,32 @@ ggsurvplot(fit_solving, data = final_dataset,
            conf.int = TRUE,
            pval = FALSE,
            legend.title = "Task Difficulty",
-           legend.labs = c("Level 1 (Easy)", "Levels 2", "Level 3 (Harder)"),
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
-           palette = "Dark2")
+           palette = "Dark2",
+           ggtheme = theme_classic(base_size = 14),  
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #Level grouped
-fit_solving_grouped <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ LEVEL_grouped
-                               +cluster(Roost),
-                                data = final_dataset)
-ggsurvplot(fit_solving_grouped, data = final_dataset,
-           conf.int = TRUE,
-           pval = FALSE,
-           legend.title = "Task Difficulty",
-           legend.labs = c("Level 1 (Easy)", "Levels 2 & 3 (Harder)"),
-           xlab = "Time until solving (min)",
-           ylab = "Survival probability (not yet solved)",
-           palette = "Dark2")
+# fit_solving_grouped <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ LEVEL_grouped
+#                                +cluster(Roost),
+#                                 data = final_dataset)
+# ggsurvplot(fit_solving_grouped, data = final_dataset,
+#            conf.int = TRUE,
+#            pval = FALSE,
+#            legend.title = "Task Difficulty",
+#            legend.labs = c("Level 1 (Easy)", "Levels 2 & 3 (Harder)"),
+#            xlab = "Time until solving (min)",
+#            ylab = "Survival probability (not yet solved)",
+#            palette = "Dark2",
+#            ggtheme = theme_classic(base_size = 14),  
+#            font.x = c(12),
+#            font.y = c(12),
+#            font.tickslab = c(10),
+#            font.legend = c(11))
 
 #UI
 fit_UI_2 <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ UI_cat
@@ -287,7 +314,12 @@ ggsurvplot(fit_UI_2, data = final_dataset,
            legend.title = "Urbanisation",
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
-           palette = "Accent")
+           palette = "Accent",
+           ggtheme = theme_classic(base_size = 14),  
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #Entropy
 fit_entropy <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Entropy_cat
@@ -300,7 +332,12 @@ ggsurvplot(fit_entropy, data = final_dataset,
            legend.labs = c("High entropy", "Low entropy"),
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
-           palette = "BrBg")
+           palette = "BrBg",
+           ggtheme = theme_classic(base_size = 14),  
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #Roost (random)
 fit_roost <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Roost,
@@ -314,19 +351,12 @@ ggsurvplot(fit_roost, data = final_dataset,
            legend.labs = Roost_code,
            palette = my_colours,
            legend = "right", 
-           legend.position = c(1, 0.5))
-
-#Position
-#   fit_position <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Position
-#                         +cluster(Roost),
-#                         data = final_dataset)
-# ggsurvplot(fit_position, data = final_dataset,
-#            conf.int = TRUE,
-#            pval = FALSE,
-#            legend.title = "Task position",
-#            xlab = "Time until first approach (min)",
-#            ylab = "Survival probability (not yet approached)",
-#            palette = "Set1")
+           legend.position = c(1, 0.5),
+           ggtheme = theme_classic(base_size = 14),  
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #Centrality
 fit_degree <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Degree +
@@ -338,7 +368,12 @@ ggsurvplot(fit_degree, data = final_dataset,
            legend.title = "Roost centrality",
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
-           palette = "Oranges")
+           palette = "Oranges",
+           ggtheme = theme_classic(base_size = 14),  
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
 #Roost size
 fit_roostsize <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ Roost_size_cat 
@@ -350,6 +385,16 @@ ggsurvplot(fit_roostsize, data = final_dataset,
            legend.title = "Roost size",
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
-           palette = "Pastel1")
+           palette = "Pastel1",
+           ggtheme = theme_classic(base_size = 14),  
+           font.x = c(12),
+           font.y = c(12),
+           font.tickslab = c(10),
+           font.legend = c(11))
 
-
+## Save model summaries ##
+# summary_1stapproach <- capture.output(summary(cox_1stapproach))
+# writeLines(summary_1stapproach, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/ARTICLE/Supplementary/cox_1stapproach.txt")
+# 
+# summary_solving <- capture.output(summary(cox_model_solving))
+# writeLines(summary_solving, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/ARTICLE/Supplementary/cox_solving.txt")

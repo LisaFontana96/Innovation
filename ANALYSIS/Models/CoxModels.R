@@ -150,19 +150,33 @@ summary(cox_solving_bayes)
 
 ## PLOTS 1st approach ##
 # Load posterior draws from the Bayesian Cox model
+desired_order <- rev(c("scaleUI", "Degree", "scaleO.Neill", "scaleRoost.size", "LEVEL3", "LEVEL2"))
+y_labels <- c(
+  "scaleUI" = "Urbanisation (scaled)",
+  "Degree" = "Connectivity (Degree)",
+  "scaleO.Neill" = "Entropy (scaled)",
+  "scaleRoost.size" = "Roost Size (scaled)",
+  "LEVEL3" = "Level 3 vs 1",
+  "LEVEL2" = "Level 2 vs 1"
+)
+
+# Load posterior draws from the Bayesian Cox model
 posterior_long_approach <- cox_1stapproach_bayes %>%
   spread_draws(b_LEVEL2, b_LEVEL3, b_scaleRoost.size, b_Degree, b_scaleUI, b_scaleO.Neill) %>%
   select(-.chain, -.iteration, -.draw) %>%
   pivot_longer(cols = everything(), names_to = "predictor", values_to = "log_hr") %>%
   mutate(
     hazard_ratio = exp(log_hr),
-    predictor = gsub("b_", "", predictor)
+    predictor = gsub("b_", "", predictor),
+    # Crea un fattore con l'ordine desiderato
+    predictor_factor = factor(predictor, levels = desired_order)
   )
 
-#Plot 1
-ggplot(posterior_long_approach, aes(x = log_hr, y = reorder(predictor, log_hr))) +
+# Plot 1
+ggplot(posterior_long_approach, aes(x = log_hr, y = predictor_factor)) +
   stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
+  scale_y_discrete(labels = y_labels) +
   labs(
     x = "Posterior estimate (log hazard)",
     y = NULL,
@@ -170,19 +184,12 @@ ggplot(posterior_long_approach, aes(x = log_hr, y = reorder(predictor, log_hr)))
   ) +
   theme_minimal(base_size = 14)
 
-#Plot 2
-ggplot(posterior_long_approach, aes(x = hazard_ratio, y = reorder(predictor, hazard_ratio))) +
+# Plot 2
+ggplot(posterior_long_approach, aes(x = hazard_ratio, y = predictor_factor)) +
   stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "gray40") +
   scale_x_log10() +
-  scale_y_discrete(labels = c(
-    "LEVEL2" = "Level 2 vs 1",
-    "LEVEL3" = "Level 3 vs 1",
-    "scaleRoost.size" = "Roost Size (scaled)",
-    "Degree" = "Connectivity (Degree)",
-    "scaleUI" = "Urbanisation (scaled)",
-    "scaleO.Neill" = "Entropy (scaled)"
-  )) +
+  scale_y_discrete(labels = y_labels) +
   labs(
     x = "Hazard Ratio (log scale)",
     y = NULL,
@@ -193,47 +200,69 @@ ggplot(posterior_long_approach, aes(x = hazard_ratio, y = reorder(predictor, haz
 ## PLOTS Solving ##
 # Load posterior draws from the Bayesian Cox model
 posterior_draws <- cox_solving_bayes %>%
-  spread_draws(b_LEVEL2, b_LEVEL3, 
+  spread_draws(b_LEVEL2, b_LEVEL3,
                b_scaleRoost.size, b_Degree, b_scaleUI, b_scaleO.Neill)
 
 # Reshape to long format and compute hazard ratios
 posterior_long <- cox_solving_bayes %>%
-  spread_draws(b_LEVEL2, b_LEVEL3, 
+  spread_draws(b_LEVEL2, b_LEVEL3,
                b_scaleRoost.size, b_Degree, b_scaleUI, b_scaleO.Neill) %>%
-  select(-.chain, -.iteration, -.draw) %>%  
+  select(-.chain, -.iteration, -.draw) %>%
   pivot_longer(cols = everything(), names_to = "predictor", values_to = "log_hr") %>%
   mutate(
     hazard_ratio = exp(log_hr),
-    predictor = gsub("b_", "", predictor)  
+    predictor = gsub("b_", "", predictor),
+    # Crea un fattore con l'ordine desiderato
+    predictor_factor = factor(predictor, levels = desired_order)
   )
 
 # Plot 1: Posterior log-hazard estimates
-ggplot(posterior_long, aes(x = log_hr, y = reorder(predictor, log_hr))) +
+ggplot(posterior_long, aes(x = log_hr, y = predictor_factor)) +
   stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
+  scale_y_discrete(labels = y_labels) +
   labs(
     x = "Posterior estimate (log hazard)",
     y = NULL,
-    title = "Posterior distributions"
+    title = "Posterior distributions (Bayesian Cox model – Solving)"
   ) +
   theme_minimal(base_size = 14)
 
 # Plot 2: Posterior hazard ratios (log-scaled x-axis)
-ggplot(posterior_long, aes(x = hazard_ratio, y = reorder(predictor, hazard_ratio))) +
+ggplot(posterior_long, aes(x = hazard_ratio, y = predictor_factor)) +
   stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
   geom_vline(xintercept = 1, linetype = "dashed", color = "gray40") +
   scale_x_log10() +
-  scale_y_discrete(labels = c(
-    "LEVEL2" = "Level 2 vs 1",
-    "LEVEL3" = "Level 3 vs 1",
-    "scaleRoost.size" = "Roost Size (scaled)",
-    "Degree" = "Connectivity (Degree)",
-    "scaleUI" = "Urbanisation (scaled)",
-    "scaleO.Neill" = "Entropy (scaled)"
-  )) +
+  scale_y_discrete(labels = y_labels) +
   labs(
     x = "Hazard Ratio (log scale)",
     y = NULL,
     title = "Posterior Hazard Ratios (solving model)"
   ) +
   theme_minimal(base_size = 14)
+
+### Posterior probability ###
+
+## Latency until first approach
+posterior <- posterior::as_draws_df(cox_1stapproach_bayes)
+fixed_effects <- posterior[, grep("^b_", names(posterior))]
+
+# Compute posterior probabilities
+posterior_probs <- sapply(fixed_effects, function(x) mean(x > 0))
+posterior_probs_df <- data.frame(
+  Parameter = names(posterior_probs),
+  Posterior_Prob_gt_0 = round(posterior_probs, 3),
+  Posterior_Prob_lt_0 = round(1 - posterior_probs, 3)
+)
+
+## Latency until solving
+posterior <- posterior::as_draws_df(cox_solving_bayes)
+fixed_effects <- posterior[, grep("^b_", names(posterior))]
+
+# Compute posterior probabilities
+posterior_probs <- sapply(fixed_effects, function(x) mean(x > 0))
+posterior_probs_df <- data.frame(
+  Parameter = names(posterior_probs),
+  Posterior_Prob_gt_0 = round(posterior_probs, 3),
+  Posterior_Prob_lt_0 = round(1 - posterior_probs, 3)
+)
