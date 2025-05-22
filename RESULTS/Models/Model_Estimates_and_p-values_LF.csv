@@ -1,8 +1,0 @@
-Predictor,Approach (coxme),Approach grouped (coxme),Solving (coxph + frailty),Solving grouped (coxph + frailty)
-LEVEL2,-0.84 (p = 0.089),NA,*-2.58 (p = 0.0018),NA
-LEVEL3,-0.81 (p = 0.151),NA,*-1.99 (p = 0.0110) ,NA
-LEVEL_grouped2-3,NA,-0.83 (p = 0.068),NA,*-2.30 (p = 0.0012) 
-scale(Roost.size),-0.06 (p = 0.858),-0.05 (p = 0.867),0.15 (p = 0.710),0.16 (p = 0.680)
-Degree,0.99 (p = 0.120),1.00 (p = 0.116),0.85 (p = 0.260),0.88 (p = 0.230)
-scale(UI),0.79 (p = 0.035),0.79 (p = 0.035),-0.09 (p = 0.840),-0.08 (p = 0.870)
-scale(O.Neill),-0.27 (p = 0.489),-0.27 (p = 0.490),0.86 (p = 0.094),0.86 (p = 0.092)

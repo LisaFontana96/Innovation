@@ -81,7 +81,7 @@ final_dataset <- summary %>%
   )
 
 ### MODELS ###
-refit <- TRUE
+refit <- FALSE
 ## First approach model ##
 if (refit) {
   cox_1stapproach <- coxme(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ 
@@ -97,18 +97,18 @@ if (refit) {
 summary(cox_1stapproach)
 Schoenfeld.res.approach<- cox.zph(cox_1stapproach) #p value > 0.05
 
-if (refit) {
-  cox_1stapproach_grouped <- coxme(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ 
-                             LEVEL_grouped + scale(Roost.size) + 
-                             Degree + scale(UI) + scale(O.Neill) + 
-                             (1 | Roost),
-                           data = final_dataset)
-  
-  saveRDS(cox_1stapproach_grouped, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_1stapproach_grouped.rds")
-} else {
-  cox_1stapproach_grouped <- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_1stapproach_grouped.rds")
-}
-summary(cox_1stapproach_grouped)
+# if (refit) {
+#   cox_1stapproach_grouped <- coxme(Surv(X1st.APPROACH.latency, APPROACHED.SCC == 1) ~ 
+#                              LEVEL_grouped + scale(Roost.size) + 
+#                              Degree + scale(UI) + scale(O.Neill) + 
+#                              (1 | Roost),
+#                            data = final_dataset)
+#   
+#   saveRDS(cox_1stapproach_grouped, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_1stapproach_grouped.rds")
+# } else {
+#   cox_1stapproach_grouped <- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_1stapproach_grouped.rds")
+# }
+# summary(cox_1stapproach_grouped)
 
 ## Solving model ##
 if (refit) {
@@ -126,19 +126,35 @@ if (refit) {
 summary(cox_model_solving)
 Schoenfeld.res.solving<- cox.zph(cox_model_solving) #p value > 0.05
 
-if (refit) {
-  cox_model_solving_grouped <- coxph(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ 
-                               LEVEL_grouped + scale(Roost.size) + 
-                               Degree + scale(UI) + scale(O.Neill) + 
-                               frailty(Roost),
-                             data = final_dataset,
-                             x=TRUE)
-  
-  saveRDS(cox_model_solving_grouped, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_model_solving_grouped.rds")
-} else {
-  cox_model_solving_grouped <- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_model_solving_grouped.rds")
-}
-summary(cox_model_solving_grouped)
+# ## Solving model 2 ##
+# if (refit) {
+#   cox_model_solving2 <- coxph(Surv(SOLVING.latency.1, SOLVED.SCC == 1) ~ 
+#                                LEVEL + scale(Roost.size) + 
+#                                Degree + scale(UI) + scale(O.Neill) + 
+#                                frailty(Roost),
+#                              data = final_dataset,
+#                              x=TRUE)
+#   
+#   saveRDS(cox_model_solving2, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_model_solving2.rds")
+# } else {
+#   cox_model_solving2 <- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_model_solving2.rds")
+# }
+# summary(cox_model_solving2)
+# Schoenfeld.res.solving<- cox.zph(cox_model_solving2) #p value > 0.05
+
+# if (refit) {
+#   cox_model_solving_grouped <- coxph(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ 
+#                                LEVEL_grouped + scale(Roost.size) + 
+#                                Degree + scale(UI) + scale(O.Neill) + 
+#                                frailty(Roost),
+#                              data = final_dataset,
+#                              x=TRUE)
+#   
+#   saveRDS(cox_model_solving_grouped, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_model_solving_grouped.rds")
+# } else {
+#   cox_model_solving_grouped <- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_model_solving_grouped.rds")
+# }
+# summary(cox_model_solving_grouped)
 
 ### GRAPHS ###
 ## First approach ##

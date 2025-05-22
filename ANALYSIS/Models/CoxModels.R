@@ -137,6 +137,22 @@ if(refit){
 } #if refit <- FALSE, it reads the model, it TRUE, it builds and saves the model
 summary(cox_solving_bayes)
 
+# # Solving 2 
+# if(refit){
+#   # Make the model
+#   cox_solving_bayes2 <- brm(
+#     bf(SOLVING.latency.2 | cens(1 - SOLVED.SCC) ~ LEVEL + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
+#     data = final_dataset, 
+#     family = brmsfamily("cox"),
+#     prior= priors,
+#     chains = 4, iter = 20000, warmup = 5000, cores = 5,
+#     control = list(adapt_delta = 0.9999))
+#   # Save the model
+#   saveRDS(cox_solving_bayes2, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_solving_bayes2.rds")
+# } else {
+#   cox_solving_bayes2<- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/cox_solving_bayes2.rds")}
+# summary(cox_solving_bayes2)
+
 #With position
 # cox_solving_bayes_position <- brm(
 #   bf(SOLVING.latency.1 | cens(1 - SOLVED.SCC) ~ LEVEL + Position + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)),
