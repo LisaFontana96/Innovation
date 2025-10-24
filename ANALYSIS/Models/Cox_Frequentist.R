@@ -1,20 +1,21 @@
-rm(list = ls())
-cat("\014")
-graphics.off()
-options(scipen = 999)
-library(survival)
+library(brms)
+library(splines2)
 library(survminer)
+library(survival)
 library(dplyr)
-library(effects)
+library(tidybayes)
+library(tidyr)
 library(ggplot2)
-library(scales)
+library(summarytools)
 library(lubridate)
+library(car)
+library(broom.mixed)
 library(coxme)
-library(ggfortify)
+library(lme4)  
 
 # dataset_firstapproach<- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/DataCleaning/DatasetModel_1stApproach.csv') 
 # dataset_solving<- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/DataCleaning/DatasetModel_Solving.csv') 
-summary<- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/DataCleaning/SUMMARY_EXP_LF_EcologicalVariables.csv')
+summary<- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/DataCleaning/SUMMARY_EXPERIMENT2023_102025_LF.csv')
 
 ### Cleaning ###
 
@@ -414,3 +415,77 @@ ggsurvplot(fit_roostsize, data = final_dataset,
 # 
 # summary_solving <- capture.output(summary(cox_model_solving))
 # writeLines(summary_solving, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/ARTICLE/Supplementary/cox_solving.txt")
+
+
+### Model 3: Binary solving outcome (Frequentist) ###
+glmm_solving_freq <- glmer(
+  SOLVED.SCC ~ LEVEL + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost),
+  data = final_dataset,
+  family = binomial(link = "logit")
+)
+summary(glmm_solving_freq)
+# Get odds ratios (exponentiated coefficients)
+exp(fixef(glmm_solving_freq))
+# Confidence intervals on odds ratio scale
+exp(confint(glmm_solving_freq, method = "Wald"))
+
+## Plots
+library(ggplot2)
+library(broom.mixed)  # for tidy() function with mixed models
+
+### Plot frequentist binary GLMM results ###
+
+# Extract coefficients and confidence intervals
+freq_results <- broom.mixed::tidy(glmm_solving_freq, conf.int = TRUE, conf.method = "Wald")
+
+# Remove intercept and format
+freq_results <- freq_results %>%
+  filter(effect == "fixed", term != "(Intercept)") %>%
+  mutate(
+    # Calculate odds ratios
+    odds_ratio = exp(estimate),
+    or_lower = exp(conf.low),
+    or_upper = exp(conf.high),
+    # Clean up term names
+    term_clean = case_when(
+      term == "LEVEL2" ~ "Level 2 vs 1",
+      term == "LEVEL3" ~ "Level 3 vs 1",
+      term == "scale(Roost.size)" ~ "Roost Size (scaled)",
+      term == "Degree" ~ "Connectivity (Degree)",
+      term == "scale(UI)" ~ "Urbanisation (scaled)",
+      term == "scale(O.Neill)" ~ "Entropy (scaled)",
+      TRUE ~ term
+    ),
+    # Create factor with desired order
+    term_factor = factor(term_clean, 
+                         levels = rev(c("Level 2 vs 1", "Level 3 vs 1", 
+                                        "Roost Size (scaled)", "Connectivity (Degree)",
+                                        "Urbanisation (scaled)", "Entropy (scaled)")))
+  )
+
+# Plot 1: Log-odds (coefficients)
+ggplot(freq_results, aes(x = estimate, y = term_factor)) +
+  geom_point(size = 3) +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
+  labs(
+    x = "Coefficient estimate (log odds)",
+    y = NULL,
+    title = "Binomial GLMM (Probability of Solving)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5, size = 12))
+
+# Plot 2: Odds ratios
+ggplot(freq_results, aes(x = odds_ratio, y = term_factor)) +
+  geom_point(size = 3) +
+  geom_errorbarh(aes(xmin = or_lower, xmax = or_upper), height = 0.2) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray40") +
+  scale_x_log10() +
+  labs(
+    x = "Odds Ratio (log scale)",
+    y = NULL,
+    title = "Odds Ratios (Binary Model)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5, size = 12))

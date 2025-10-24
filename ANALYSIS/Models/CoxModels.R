@@ -162,6 +162,29 @@ summary(cox_solving_bayes)
 #   chains = 4, iter = 20000, warmup = 5000, cores = 5,
 #   control = list(adapt_delta = 0.9999))
 
+#Solved/Not solved
+refit <- FALSE
+if(refit){
+  # Binomial GLMM for binary solving outcome
+  solved_binary_model <- brm(
+    bf(SOLVED.SCC ~ LEVEL + scale(Roost.size) + Degree + scale(UI) + scale(O.Neill) + (1 | Roost)), 
+    data = final_dataset, 
+    family = bernoulli(link = "logit"),  
+    prior = priors,
+    chains = 4, 
+    iter = 20000, 
+    warmup = 5000, 
+    cores = 5,
+    control = list(adapt_delta = 0.999))
+  
+  # Save the model
+  saveRDS(solved_binary_model, "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/solved_binary_model.rds")
+} else {
+  solved_binary_model <- readRDS("/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/Models/solved_binary_model.rds")
+}
+
+summary(solved_binary_model)
+
 #### PLOTS ####
 
 ## PLOTS 1st approach ##
@@ -256,6 +279,45 @@ ggplot(posterior_long, aes(x = hazard_ratio, y = predictor_factor)) +
     title = "Posterior Hazard Ratios (solving model)"
   ) +
   theme_minimal(base_size = 14)
+
+#Binary solving model
+# Load posterior draws from the binary solving model
+posterior_long_binary <- solved_binary_model %>%
+  spread_draws(b_LEVEL2, b_LEVEL3, b_scaleRoost.size, b_Degree, b_scaleUI, b_scaleO.Neill) %>%
+  select(-.chain, -.iteration, -.draw) %>%
+  pivot_longer(cols = everything(), names_to = "predictor", values_to = "log_odds") %>%
+  mutate(
+    odds_ratio = exp(log_odds),
+    predictor = gsub("b_", "", predictor),
+    predictor_factor = factor(predictor, levels = desired_order)
+  )
+
+# Plot 1: Log-odds
+ggplot(posterior_long_binary, aes(x = log_odds, y = predictor_factor)) +
+  stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray40") +
+  scale_y_discrete(labels = y_labels) +
+  labs(
+    x = "Posterior estimate (log odds)",
+    y = NULL,
+    title = "Posterior Distributions (Bayesian GLMM – Probability of Solving)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5, size = 12))  # <-- Added size = 12
+
+# Plot 2: Odds ratios
+ggplot(posterior_long_binary, aes(x = odds_ratio, y = predictor_factor)) +
+  stat_halfeye(.width = c(0.90, 0.95), point_interval = "median_qi") +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "gray40") +
+  scale_x_log10() +
+  scale_y_discrete(labels = y_labels) +
+  labs(
+    x = "Odds Ratio (log scale)",
+    y = NULL,
+    title = "Posterior Odds Ratios (Binary Solving Model)"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(plot.title = element_text(hjust = 0.5, size = 12))
 
 ### Posterior probability ###
 
