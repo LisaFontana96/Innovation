@@ -8,6 +8,7 @@ library(tidyr)
 library(ggplot2)
 library(summarytools)
 library(lubridate)
+library(scales)
 library(car)
 library(broom.mixed)
 library(coxme)
@@ -289,7 +290,7 @@ ggsurvplot(fit_roost, data = final_dataset,
 #Level
 fit_solving <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ LEVEL
                        +cluster(Roost),
-                               data = final_dataset)
+                       data = final_dataset)
 ggsurvplot(fit_solving, data = final_dataset,
            conf.int = TRUE,
            pval = FALSE,
@@ -297,11 +298,14 @@ ggsurvplot(fit_solving, data = final_dataset,
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
            palette = "Dark2",
+           xlim = c(0, 81000),  
+           break.time.by = 20000,
            ggtheme = theme_classic(base_size = 14),  
            font.x = c(12),
            font.y = c(12),
            font.tickslab = c(10),
            font.legend = c(11))
+
 
 #Level grouped
 # fit_solving_grouped <- survfit(Surv(SOLVING.latency.2, SOLVED.SCC == 1) ~ LEVEL_grouped
@@ -332,6 +336,8 @@ ggsurvplot(fit_UI_2, data = final_dataset,
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
            palette = "Accent",
+           xlim = c(0, 81000),  
+           break.time.by = 20000,
            ggtheme = theme_classic(base_size = 14),  
            font.x = c(12),
            font.y = c(12),
@@ -350,6 +356,8 @@ ggsurvplot(fit_entropy, data = final_dataset,
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
            palette = "BrBg",
+           xlim = c(0, 81000),  
+           break.time.by = 20000,
            ggtheme = theme_classic(base_size = 14),  
            font.x = c(12),
            font.y = c(12),
@@ -367,6 +375,8 @@ ggsurvplot(fit_roost, data = final_dataset,
            xlab = 'Time until solving (min)',
            legend.labs = Roost_code,
            palette = my_colours,
+           xlim = c(0, 81000),
+           break.time.by = 20000,
            legend = "right", 
            legend.position = c(1, 0.5),
            ggtheme = theme_classic(base_size = 14),  
@@ -386,6 +396,8 @@ ggsurvplot(fit_degree, data = final_dataset,
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
            palette = "Oranges",
+           xlim = c(0, 81000),  
+           break.time.by = 20000,
            ggtheme = theme_classic(base_size = 14),  
            font.x = c(12),
            font.y = c(12),
@@ -403,6 +415,8 @@ ggsurvplot(fit_roostsize, data = final_dataset,
            xlab = "Time until solving (min)",
            ylab = "Survival probability (not yet solved)",
            palette = "Pastel1",
+           xlim = c(0, 81000),  
+           break.time.by = 20000,
            ggtheme = theme_classic(base_size = 14),  
            font.x = c(12),
            font.y = c(12),
@@ -428,10 +442,6 @@ summary(glmm_solving_freq)
 exp(fixef(glmm_solving_freq))
 # Confidence intervals on odds ratio scale
 exp(confint(glmm_solving_freq, method = "Wald"))
-
-## Plots
-library(ggplot2)
-library(broom.mixed)  # for tidy() function with mixed models
 
 ### Plot frequentist binary GLMM results ###
 
@@ -476,16 +486,3 @@ ggplot(freq_results, aes(x = estimate, y = term_factor)) +
   theme_minimal(base_size = 14) +
   theme(plot.title = element_text(hjust = 0.5, size = 12))
 
-# Plot 2: Odds ratios
-ggplot(freq_results, aes(x = odds_ratio, y = term_factor)) +
-  geom_point(size = 3) +
-  geom_errorbarh(aes(xmin = or_lower, xmax = or_upper), height = 0.2) +
-  geom_vline(xintercept = 1, linetype = "dashed", color = "gray40") +
-  scale_x_log10() +
-  labs(
-    x = "Odds Ratio (log scale)",
-    y = NULL,
-    title = "Odds Ratios (Binary Model)"
-  ) +
-  theme_minimal(base_size = 14) +
-  theme(plot.title = element_text(hjust = 0.5, size = 12))

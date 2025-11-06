@@ -1,4 +1,6 @@
 rm(list = ls())
+cat("\014")
+graphics.off()
 library(dplyr)
 library(lubridate)
 library(tidyr)

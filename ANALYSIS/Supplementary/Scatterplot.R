@@ -1,14 +1,13 @@
 rm(list = ls())
 cat("\014")
 graphics.off()
-
 library(dplyr)
 library(ggplot2)
 library(patchwork)
 library(lubridate)
 
 ### Load data ###
-summary <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/DataCleaning/SUMMARY_EXP_LF_EcologicalVariables.csv')
+summary <- read.csv('/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/RESULTS/DataCleaning/SUMMARY_EXPERIMENT2023_102025_LF.csv')
 
 ### Cleaning ###
 summary <- summary %>%
@@ -30,7 +29,7 @@ summary <- summary %>%
     )
   )
 
-final_dataset <- summary %>%
+summary <- summary %>%
   mutate(
     X1st.APPROACH.latency = ifelse(
       (is.na(X1st.APPROACH.latency) & FATE.1st.approach %in% c("Never approached", "No data")),
@@ -60,7 +59,7 @@ final_dataset <- summary %>%
   )
 
 # Calculate success rate per roost
-roost_summary <- final_dataset %>%
+roost_summary <- summary %>%
   group_by(Roost) %>%
   summarise(
     success_rate = mean(SOLVED.SCC, na.rm = TRUE),
@@ -69,7 +68,9 @@ roost_summary <- final_dataset %>%
     urbanization = first(UI),
     entropy = first(O.Neill),
     roost_size = first(Roost.size),
-    degree = first(Degree)
+    degree = first(Degree),
+    total_approaches = sum(n_approaches_total, na.rm = TRUE),
+    total_engagement = sum(total_engagement_time_all, na.rm = TRUE)
   )
 
 ### --- Plot setup parameters ---
@@ -114,15 +115,21 @@ p4 <- ggplot(roost_summary, aes(x = as.factor(degree), y = success_rate)) +
     axis.title = element_text(size = 12)
   )
 
-# Combine 2x2
-combined_plot <- (p1 | p2) / (p3 | p4)
+p5 <- ggplot(roost_summary, aes(x = total_engagement, y = success_rate)) +
+  geom_point(size = 1.5, alpha = 0.8) +
+  ylim(0, 1) +
+  labs(x = "Total engagement time (minutes)", y = "Success rate") +
+  base_theme
+
+p6 <- ggplot(roost_summary, aes(x = total_approaches, y = success_rate)) +
+  geom_point(size = 1.5, alpha = 0.8) +
+  ylim(0, 1) +
+  labs(x = "Total number of approaches", y = "Success rate") +
+  base_theme
+
+# Combine into one figure (3x2 layout)
+combined_plot <- (p1 | p2) / (p3 | p4) / (p5 | p6)
 combined_plot
-
-# Save
-output_dir <- "/Users/u7585399/Library/CloudStorage/OneDrive-AustralianNationalUniversity/LISA/ANU_PhD/CCE_Lab/InnovationTask/Innovation/PICTURES&GRAPHS/GRAPHS/Supplementary"
-ggsave(paste0(output_dir, "success_rate_by_predictors.png"),
-       combined_plot, width = 12, height = 10, dpi = 300)
-
 
 # ## With regression line and SD
 # # Plot 1: Success rate vs Urbanization
